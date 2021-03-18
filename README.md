@@ -31,7 +31,7 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
 1. Rename **erbb_network/** to CCLE_name or TCGA_ID
 
 1. Edit **name2idx/parameters.py**
-   - Add weighting factors (`'w_XXX'`)
+   - Add weighting factors for each gene (prefix: `"w_"`)
 1. Edit **set_search_param.py**
 
    - Import `dyaus.Individualization`
@@ -86,22 +86,24 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
        for i, j in enumerate(self.idx_initials):
            y0[j] = indiv[i + len(self.idx_params)]
 
-       x[C.V291] = incorporating_gene_expression_levels.as_maximal_transcription_rate(
+       # As maximal transcription rate
+       x[C.V291] = incorporating_gene_expression_levels.as_reaction_rate(
            __path__[0].split(os.sep)[-1], x, "V291", "DUSP"
        )
-       x[C.V310] = incorporating_gene_expression_levels.as_maximal_transcription_rate(
+       x[C.V310] = incorporating_gene_expression_levels.as_reaction_rate(
            __path__[0].split(os.sep)[-1], x, "V310", "cMyc"
        )
-       y0 = incorporating_gene_expression_levels.as_initial_condition(
+       # As initial conditions
+       y0 = incorporating_gene_expression_levels.as_initial_conditions(
            __path__[0].split(os.sep)[-1], x, y0
        )
 
        ...
    ```
 
-### Train model parameters against time-course datasets obtained from breast cancer cell lines
+### Use time-course datasets to train kinetic constants and weighting factors
 
-1. Use `biomass.Text2Model` to build a mechanistic model for parameter estimation with BioMASS.jl
+1. Build a mechanistic model for parameter estimation with BioMASS.jl
 
    ```python
    from biomass import Text2Model
@@ -120,6 +122,7 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
    $ cd training
    $ mkdir errout
    $ sh optimize_parallel.sh
+   $ cd ..
    ```
 
    When finished, run:
@@ -127,10 +130,30 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
    ```julia
    using BioMASS
 
-   param2biomass(".")
+   param2biomass("training")
    ```
 
-   And you will get **dat2npy/out/**. This is the optimized parameter sets that biomass can load. Copy **out/** to each biomass model folder.
+   And you will get **dat2npy/out/**. This is the optimized parameter sets that biomass can load.
+   Copy **out/** to each biomass model folder via:
+
+   ```python
+   import os
+   import shutil
+
+   models = []
+   path_to_models = os.path.join("models", "breast")
+
+   for f in os.listdir(path_to_models):
+        if os.path.isdir(os.path.join(path_to_models, f)) and (
+            f.startswith("TCGA_") or f.endswith("_BREAST")
+        ):
+            models.append(f)
+   for model in models:
+       shutil.copytree(
+           os.path.join("training", "dat2npy", "out"),
+           os.path.join("models", "breast", f"{model}"),
+       )
+   ```
 
 ### Execute patient-specific models
 
@@ -143,29 +166,14 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
    from dyaus import PatientModelSimulations
 
 
-   with open (
-       os.path.join(
-           "models",
-           "breast",
-           "sample_names.txt",
-       ), mode="r"
-   ) as f:
+   with open (os.path.join("models", "breast", "sample_names.txt"), mode="r") as f:
        TCGA_ID = f.read().splitlines()
-
    # Create patient-specific models
    for patient in TCGA_ID:
        if patient != "TCGA_3C_AALK_01A":
            shutil.copytree(
-               os.path.join(
-                   "models",
-                   "breast",
-                   "TCGA_3C_AALK_01A",
-               ),
-               os.path.join(
-                   "models",
-                   "breast",
-                   f"{patient}",
-               )
+               os.path.join("models", "breast", "TCGA_3C_AALK_01A"),
+               os.path.join("models", "breast", f"{patient}"),
            )
 
    simulations = PatientModelSimulations("models.breast", TCGA_ID)
@@ -179,4 +187,4 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
 
 ## License
 
-[Apache-2.0 License](https://opensource.org/licenses/Apache-2.0)
+[Apache License 2.0](LICENSE)
