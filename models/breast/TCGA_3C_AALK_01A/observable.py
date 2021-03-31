@@ -219,73 +219,7 @@ class ExperimentalData(object):
         return egf_ave, hrg_ave, egf_sem, hrg_sem
 
     def set_data(self):
-        data_pAkt = self._norm01(
-            egf1=[32101, 156970, 90301, 76709, 63640, 52536, 46414, 57329],
-            hrg1=[32101, 565508, 551901, 560064, 489678, 408802, 425323, 451502],
-            egf2=[11612, 96189, 43622, 43238, 41007, 29902, 19255, 35079],
-            hrg2=[11612, 397931, 432609, 417622, 434519, 509919, 361041, 292523],
-            egf3=[66038, 208525, 102689, 117308, 125158, 92086, 68587, 78252],
-            hrg3=[66038, 563079, 573540, 521062, 447462, 383774, 434807, 409615],
-        )
-        self.experiments[observables.index("Phosphorylated_Akt")] = {
-            "EGF": data_pAkt[0],
-            "HRG": data_pAkt[1],
-        }
-        self.error_bars[observables.index("Phosphorylated_Akt")] = {
-            "EGF": data_pAkt[2],
-            "HRG": data_pAkt[3],
-        }
-
-        data_pERK = self._norm01(
-            egf1=[65481, 446949, 221435, 283171, 265152, 266056, 204912, 188972],
-            hrg1=[65481, 698717, 766252, 710005, 693622, 691856, 522173, 334410],
-            egf2=[41927, 507623, 169918, 193671, 164088, 145916, 110844, 130362],
-            hrg2=[41927, 605118, 699511, 654697, 579863, 490649, 299946, 229297],
-            egf3=[118995, 807929, 338665, 267160, 253820, 230200, 157620, 153112],
-            hrg3=[118995, 710436, 673318, 615206, 612686, 523198, 390301, 257664],
-        )
-        self.experiments[observables.index("Phosphorylated_ERK")] = {
-            "EGF": data_pERK[0],
-            "HRG": data_pERK[1],
-        }
-        self.error_bars[observables.index("Phosphorylated_ERK")] = {
-            "EGF": data_pERK[2],
-            "HRG": data_pERK[3],
-        }
-        '''
-        data_pcFos = self._norm01(
-            egf1=[43200, 101848, 134050, 187681, 274701, 188891, 186912, 147868],
-            hrg1=[43200, 243299, 340259, 537344, 583257, 527613, 551327, 630883],
-            egf2=[36344, 99849, 173325, 179897, 207943, 155466, 154118, 138196],
-            hrg2=[36344, 139813, 245333, 389460, 402734, 556006, 513591, 432916],
-            egf3=[43604, 83374, 108733, 116103, 113879, 95504, 94969, 94662],
-            hrg3=[43604, 111136, 343365, 464180, 453578, 440094, 404483, 589354],
-        )
-        self.experiments[observables.index("Phosphorylated_cFos")] = {
-            "EGF": data_pcFos[0],
-            "HRG": data_pcFos[1],
-        }
-        self.error_bars[observables.index("Phosphorylated_cFos")] = {
-            "EGF": data_pcFos[2],
-            "HRG": data_pcFos[3],
-        }
-        '''
-        data_pcMyc = self._norm01(
-            egf1=[115975, 226001, 166894, 194150, 263331, 235172, 126949, 91142],
-            hrg1=[115975, 62515, 81364, 155844, 390689, 664641, 848356, 856941],
-            egf2=[185069, 276202, 204012, 234391, 290020, 360762, 325531, 242455],
-            hrg2=[185069, 234416, 251732, 333993, 550670, 859790, 939956, 769616],
-            egf3=[127244, 186118, 163387, 132053, 192949, 220987, 184381, 151547],
-            hrg3=[127244, 110676, 152880, 277206, 461217, 637033, 908235, 712427],
-        )
-        self.experiments[observables.index("Phosphorylated_cMyc")] = {
-            "EGF": data_pcMyc[0],
-            "HRG": data_pcMyc[1],
-        }
-        self.error_bars[observables.index("Phosphorylated_cMyc")] = {
-            "EGF": data_pcMyc[2],
-            "HRG": data_pcMyc[3],
-        }
+        pass
 
     @staticmethod
     def get_timepoint(obs_name):

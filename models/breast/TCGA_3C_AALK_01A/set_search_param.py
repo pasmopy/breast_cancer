@@ -1,8 +1,7 @@
 import os
 
 import numpy as np
-
-from dyaus import Individualization
+from dyaus_dev import Individualization
 
 from . import __path__
 from .name2idx import C, V
@@ -759,14 +758,14 @@ class SearchParam(object):
         for i, j in enumerate(self.idx_initials):
             y0[j] = indiv[i + len(self.idx_params)]
 
-        x[C.V291] = incorporating_gene_expression_levels.as_maximal_transcription_rate(
-            __path__[0].split(os.sep)[-1], x, "V291", "DUSP"
+        x[C.V291] = incorporating_gene_expression_levels.as_reaction_rate(
+            __path__[0].split(os.sep)[-1].replace("_", "."), x, "V291", "DUSP"
         )
-        x[C.V310] = incorporating_gene_expression_levels.as_maximal_transcription_rate(
-            __path__[0].split(os.sep)[-1], x, "V310", "cMyc"
+        x[C.V310] = incorporating_gene_expression_levels.as_reaction_rate(
+            __path__[0].split(os.sep)[-1].replace("_", "."), x, "V310", "cMyc"
         )
-        y0 = incorporating_gene_expression_levels.as_initial_condition(
-            __path__[0].split(os.sep)[-1], x, y0
+        y0 = incorporating_gene_expression_levels.as_initial_conditions(
+            __path__[0].split(os.sep)[-1].replace("_", "."), x, y0
         )
 
         # parameter constraints
