@@ -1,6 +1,7 @@
-# dyaus_breast
+# breast_cancer
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-brightgreen.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Actions Status](https://github.com/dyaus-dev/breast_cancer/workflows/Tests/badge.svg)](https://github.com/dyaus-dev/breast_cancer/actions)
+[![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://github.com/dyaus-dev/breast_cancer/blob/master/LICENSE)
 
 Workflow for classifying breast cancer subtypes based on intracellular signaling dynamics.
 
@@ -12,13 +13,7 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
 | Julia >= 1.5  | [BioMASS.jl](https://github.com/himoto/BioMASS.jl)                                             |
 | R             | [TODO] Write dependent packages here.                                                          |
 
-## Individualization of the mechanistic model
-
-### Integrate TCGA and CCLE data
-
-[TODO] Write analysis procedure here.
-
-### Build an executable model of the ErbB signaling network
+## An executable model of the ErbB network dynamics
 
 1. Use `biomass.Text2Model` to build a mechanistic model
 
@@ -28,10 +23,12 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
    Text2Model("models/erbb_network.txt").to_biomass()
    ```
 
-1. Rename **erbb_network/** to CCLE_name or TCGA_ID
+1. Rename **erbb_network/** to CCLE_name or TCGA_ID, e.g., **MCF7_BREAST** or **TCGA_3C_AALK_01A**
 
 1. Edit **name2idx/parameters.py**
+
    - Add weighting factors for each gene (prefix: `"w_"`)
+
 1. Edit **set_search_param.py**
 
    - Import `dyaus.Individualization`
@@ -101,6 +98,12 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
        ...
    ```
 
+## Individualization of the mechanistic model
+
+### Integrate TCGA and CCLE data
+
+[TODO] Write analysis procedure here.
+
 ### Use time-course datasets to train kinetic constants and weighting factors
 
 1. Build a mechanistic model for parameter estimation with BioMASS.jl
@@ -142,16 +145,16 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
 
    models = []
    path_to_models = os.path.join("models", "breast")
-
    for f in os.listdir(path_to_models):
         if os.path.isdir(os.path.join(path_to_models, f)) and (
             f.startswith("TCGA_") or f.endswith("_BREAST")
         ):
             models.append(f)
+   # Set optimized parameter sets
    for model in models:
        shutil.copytree(
            os.path.join("training", "dat2npy", "out"),
-           os.path.join("models", "breast", f"{model}"),
+           os.path.join(path_to_models, f"{model}", "out"),
        )
    ```
 
@@ -175,9 +178,8 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
                os.path.join("models", "breast", "TCGA_3C_AALK_01A"),
                os.path.join("models", "breast", f"{patient}"),
            )
-
+   # Execute patient-specific models
    simulations = PatientModelSimulations("models.breast", TCGA_ID)
-
    simulations.run()
    ```
 
