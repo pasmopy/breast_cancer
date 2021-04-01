@@ -10,7 +10,7 @@ from .set_model import initial_values, param_values
 incorporating_gene_expression_levels = Individualization(
     parameters=C.NAMES,
     species=V.NAMES,
-    tpm_values="transcriptomic_data/TPM_RLE_postComBat.csv",
+    tpm_values="transcriptomic_data/TPM_RLE_postComBat.tar.xz",
     structure={
         "ErbB1": ["EGFR"],
         "ErbB2": ["ERBB2"],
