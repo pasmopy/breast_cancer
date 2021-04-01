@@ -7,6 +7,11 @@ figure/
 
 # fit_param
 out/
+!/training/erbb_network_jl/dat2npy/out/
+
+# patient-specific models
+TCGA_*
+!/models/breast/TCGA_3C_AALK_01A
 
 # sensitivity array
 sensitivity_coefficients/
