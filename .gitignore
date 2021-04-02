@@ -7,6 +7,11 @@ figure/
 
 # fit_param
 out/
+!/training/erbb_network_jl/dat2npy/out/
+
+# patient-specific models
+TCGA_*
+!/models/breast/TCGA_3C_AALK_01A
 
 # sensitivity array
 sensitivity_coefficients/
@@ -21,7 +26,7 @@ optimization_results/
 errout/
 
 # transcriptomic data
-transcriptomic_data/
+transcriptomic_data/*.csv
 
 # Python ---
 
@@ -82,22 +87,6 @@ cover/
 *.mo
 *.pot
 
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
-
-# Flask stuff:
-instance/
-.webassets-cache
-
-# Scrapy stuff:
-.scrapy
-
-# Sphinx documentation
-docs/_build/
-
 # PyBuilder
 .pybuilder/
 target/
@@ -142,12 +131,12 @@ vignettes/*.pdf
 .httr-oauth
 
 # knitr and R markdown default cache directories
- *_cache/
- /cache/
+*_cache/
+/cache/
 
 # Temporary files created by R markdown
- *.utf8.md
- *.knit.md
+*.utf8.md
+*.knit.md
 
 # R Environment Variables
 .Renviron
