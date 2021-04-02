@@ -665,11 +665,17 @@ Generating the initial population...
 663 / 663
 
 ----------------------------------------
-Generation1: Best Fitness = 2.853634e+01
-Generation2: Best Fitness = 1.129839e+01
-Generation3: Best Fitness = 1.129839e+01
-Generation4: Best Fitness = 1.129839e+01
-Generation5: Best Fitness = 6.835061e+00
-Generation6: Best Fitness = 6.535319e+00
-Generation7: Best Fitness = 6.374204e+00
-Generation8: Best Fitness = 4.690428e+00
+Generation1: Best Fitness = 2.685489e+01
+Generation2: Best Fitness = 1.151588e+01
+Generation3: Best Fitness = 1.151588e+01
+Generation4: Best Fitness = 6.421376e+00
+Generation5: Best Fitness = 6.421376e+00
+Generation6: Best Fitness = 6.421376e+00
+Generation7: Best Fitness = 6.421376e+00
+Generation8: Best Fitness = 6.358768e+00
+Generation9: Best Fitness = 6.358768e+00
+Generation10: Best Fitness = 6.358768e+00
+Generation11: Best Fitness = 6.221951e+00
+Generation12: Best Fitness = 6.046848e+00
+Generation13: Best Fitness = 5.085400e+00
+Generation14: Best Fitness = 4.756617e+00
