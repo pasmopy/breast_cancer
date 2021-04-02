@@ -13,7 +13,17 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
 | Julia >= 1.5  | [BioMASS.jl](https://github.com/himoto/BioMASS.jl)                                             |
 | R             | [TODO] Write dependent packages here.                                                          |
 
-## An executable model of the ErbB network dynamics
+## Table of contents
+
+- [Construction](#construction-of-a-comprehensive-model-of-the-ErbB-signaling-network)
+
+- [Integration](#integration-of-tcga-and-ccle-data)
+
+- [Individualization](#individualization-of-the-mechanistic-model)
+
+- [Classification](#subtype-classification-based-on-the-ErbB-signaling-dynamics)
+
+## Construction of a comprehensive model of the ErbB signaling network
 
 1. Use `biomass.Text2Model` to build a mechanistic model
 
@@ -98,11 +108,11 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
        ...
    ```
 
-## Individualization of the mechanistic model
-
-### Integrate TCGA and CCLE data
+## Integration of TCGA and CCLE data
 
 [TODO] Write analysis procedure here.
+
+## Individualization of the mechanistic model
 
 ### Use time-course datasets to train kinetic constants and weighting factors
 
