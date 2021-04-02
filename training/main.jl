@@ -9,6 +9,6 @@ if abspath(PROGRAM_FILE) == @__FILE__
         max_generation=50,
         popsize=3,
         local_search_method="DE",
-        maxiter=50,
+        maxiter=200,
     )
 end
