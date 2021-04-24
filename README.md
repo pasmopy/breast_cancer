@@ -7,11 +7,11 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
 
 ## Requirements
 
-| Language      | Dependent packages                                                                             |
-| ------------- | ---------------------------------------------------------------------------------------------- |
-| Python >= 3.7 | [biomass](https://github.com/okadalabipr/biomass), [dyaus](https://github.com/dyaus-dev/dyaus) |
-| Julia >= 1.5  | [BioMASS.jl](https://github.com/himoto/BioMASS.jl)                                             |
-| R             | [TODO] Write dependent packages here.                                                          |
+| Language      | Dependent packages                                 |
+| ------------- | -------------------------------------------------- |
+| Python >= 3.7 | [dyaus](https://github.com/dyaus-dev/dyaus)        |
+| Julia >= 1.5  | [BioMASS.jl](https://github.com/himoto/BioMASS.jl) |
+| R >= 4.0      | TCGAbiolinks, sva, biomaRt, edgeR                  |
 
 ## Table of contents
 
@@ -25,23 +25,19 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
 
 ## Construction of a comprehensive model of the ErbB signaling network
 
-1. Use `biomass.Text2Model` to build a mechanistic model
+1. Use `dyaus.Text2Model` to build a mechanistic model
 
    ```python
-   from biomass import Text2Model
+   from dyaus import Text2Model
 
-   Text2Model("models/erbb_network.txt").to_biomass()
+   Text2Model("models/erbb_network.txt").to_biomass_model()
    ```
 
 1. Rename **erbb_network/** to CCLE_name or TCGA_ID, e.g., **MCF7_BREAST** or **TCGA_3C_AALK_01A**
 
-1. Edit **name2idx/parameters.py**
-
-   - Add weighting factors for each gene (prefix: `"w_"`)
+1. Add weighting factors for each gene (prefix: `"w_"`) to **name2idx/parameters.py**
 
 1. Edit **set_search_param.py**
-
-   - Import `dyaus.Individualization`
 
    ```python
    import os
@@ -119,9 +115,9 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
 1. Build a mechanistic model for parameter estimation with BioMASS.jl
 
    ```python
-   from biomass import Text2Model
+   from dyaus import Text2Model
 
-   Text2Model("models/erbb_network.txt", lang="julia").to_biomass()
+   Text2Model("models/erbb_network.txt", lang="julia").to_biomass_model()
    ```
 
 1. Add time-series data to **experimental_data.jl**
@@ -199,4 +195,4 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
 
 ## License
 
-[Apache License 2.0](LICENSE)
+[Apache License 2.0](https://github.com/dyaus-dev/dyaus/blob/master/LICENSE)
