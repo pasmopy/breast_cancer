@@ -288,7 +288,7 @@ E11P_Grb2_Gab1P_RasGAP_RasGTP is degraded |268|
 E11P_ShcP_Grb2_Gab1P_RasGAP_RasGTP is degraded |268|
 E11P_Grb2_Gab1P_PI3K is degraded |268|
 E11P_ShcP_Grb2_Gab1P_PI3K is degraded |268|
-ERKPP transcribes PreduspmRNA | n = 1
+ERKPP transcribes PreduspmRNA | const n = 1
 PreduspmRNA is translocated from nucleus into cytoplasm (0.22, 0.94) --> duspmRNA | kr = 0
 duspmRNA is translated into DUSP
 duspmRNA is degraded
@@ -307,7 +307,7 @@ DUSPP_ERKP is dissociated into ERK and DUSPP |301|
 ERK binds DUSPP --> DUSPP_ERK |302|
 AktP phosphorylates GSK3b --> GSK3bP || GSK3b = 1
 GSK3bP is dephosphorylated --> GSK3b
-ERKPP transcribes PrecmycmRNA, repressed by cMycP | n = 1
+ERKPP transcribes PrecmycmRNA, repressed by cMycP | const n = 1
 PrecmycmRNA is translocated from nucleus into cytoplasm (0.22, 0.94) --> cmycmRNA | kr = 0
 cmycmRNA is degraded
 cmycmRNA is translated into cMyc
