@@ -106,7 +106,10 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
 
 ## Integration of TCGA and CCLE data
 
-[TODO] Write analysis procedure here.
+```bash
+$ cd transcriptomic_data
+$ Rscript transcriptomic_data_integration.R
+```
 
 ## Individualization of the mechanistic model
 
