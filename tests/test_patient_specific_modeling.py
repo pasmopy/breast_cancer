@@ -52,6 +52,19 @@ def test_patient_model_simulations():
     assert simulations.run() is None
     elapsed = time.time() - start
     print(f"Computation time for simulating 10 patients: {elapsed/60:.1f} [min]")
+    # Extract response characteristics and visualize patient classification
+    simulations.subtyping(
+        "subtype_classification.pdf",
+        {
+            "Phosphorylated_Akt": {"EGF": ["max"], "HRG": ["max"]},
+            "Phosphorylated_ERK": {"EGF": ["max"], "HRG": ["max"]},
+            "Phosphorylated_c-Myc": {"EGF": ["max"], "HRG": ["max"]},
+        },
+    )
+    observables = ["Phosphorylated_Akt", "Phosphorylated_ERK", "Phosphorylated_c-Myc"]
+    for obs in observables:
+        assert os.path.isfile(os.path.join("classification", f"{obs}.csv"))
+    assert os.path.isfile("subtype_classification.pdf")
 
 
 def test_cleanup_models():
@@ -61,3 +74,6 @@ def test_cleanup_models():
             shutil.rmtree(path_to_patient(f"{patient}"))
     # parameter sets
     shutil.rmtree(os.path.join(path_to_patient("TCGA_3C_AALK_01A"), "out"))
+    # patient classification
+    shutil.rmtree("classification")
+    os.remove("subtype_classification.pdf")

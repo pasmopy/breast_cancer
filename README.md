@@ -169,32 +169,45 @@ $ Rscript transcriptomic_data_integration.R
 
 ### Execute patient-specific models
 
-1. Use `dyaus.PatientModelSimulations`
+- Use `dyaus.PatientModelSimulations`
 
-   ```python
-   import os
-   import shutil
+  ```python
+  import os
+  import shutil
 
-   from dyaus import PatientModelSimulations
+  from dyaus import PatientModelSimulations
 
 
-   with open (os.path.join("models", "breast", "sample_names.txt"), mode="r") as f:
-       TCGA_ID = f.read().splitlines()
-   # Create patient-specific models
-   for patient in TCGA_ID:
-       if patient != "TCGA_3C_AALK_01A":
-           shutil.copytree(
-               os.path.join("models", "breast", "TCGA_3C_AALK_01A"),
-               os.path.join("models", "breast", f"{patient}"),
-           )
-   # Execute patient-specific models
-   simulations = PatientModelSimulations("models.breast", TCGA_ID)
-   simulations.run()
-   ```
+  with open (os.path.join("models", "breast", "sample_names.txt"), mode="r") as f:
+      TCGA_ID = f.read().splitlines()
+  # Create patient-specific models
+  for patient in TCGA_ID:
+      if patient != "TCGA_3C_AALK_01A":
+          shutil.copytree(
+              os.path.join("models", "breast", "TCGA_3C_AALK_01A"),
+              os.path.join("models", "breast", f"{patient}"),
+          )
+  # Execute patient-specific models
+  simulations = PatientModelSimulations("models.breast", TCGA_ID)
+  simulations.run()
+  ```
 
 ## Subtype classification based on the ErbB signaling dynamics
 
-[TODO] Write analysis procedure here.
+1. Extract response characteristics from patient-specific simulations
+
+   ```python
+   simulations.subtyping(
+       None,
+       {
+           "Phosphorylated_Akt": {"EGF": ["max"], "HRG": ["max"]},
+           "Phosphorylated_ERK": {"EGF": ["max"], "HRG": ["max"]},
+           "Phosphorylated_c-Myc": {"EGF": ["max"], "HRG": ["max"]},
+       }
+   )
+   ```
+
+1. Visualize patient classification
 
 ## License
 
