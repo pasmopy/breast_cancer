@@ -15,13 +15,22 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
 
 ## Table of contents
 
-- [Construction](#construction-of-a-comprehensive-model-of-the-ErbB-signaling-network)
-
 - [Integration](#integration-of-tcga-and-ccle-data)
+
+- [Construction](#construction-of-a-comprehensive-model-of-the-ErbB-signaling-network)
 
 - [Individualization](#individualization-of-the-mechanistic-model)
 
 - [Classification](#subtype-classification-based-on-the-ErbB-signaling-dynamics)
+
+## Integration of TCGA and CCLE data
+
+- Run [`transcriptomic_data_integration.R`](transcriptomic_data/transcriptomic_data_integration.R)
+
+  ```bash
+  $ cd transcriptomic_data
+  $ Rscript transcriptomic_data_integration.R
+  ```
 
 ## Construction of a comprehensive model of the ErbB signaling network
 
@@ -33,11 +42,11 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
    Text2Model("models/erbb_network.txt").to_biomass_model()
    ```
 
-1. Rename **erbb_network/** to CCLE_name or TCGA_ID, e.g., **MCF7_BREAST** or **TCGA_3C_AALK_01A**
+1. Rename `erbb_network/` to CCLE_name or TCGA_ID, e.g., `MCF7_BREAST` or `TCGA_3C_AALK_01A`
 
-1. Add weighting factors for each gene (prefix: `"w_"`) to **name2idx/parameters.py**
+1. Add weighting factors for each gene (prefix: `"w_"`) to [`name2idx/parameters.py`](models/breast/TCGA_3C_AALK_01A/name2idx/parameters.py)
 
-1. Edit **set_search_param.py**
+1. Edit [`set_search_param.py`](models/breast/TCGA_3C_AALK_01A/set_search_param.py)
 
    ```python
    import os
@@ -54,7 +63,7 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
        parameters=C.NAMES,
        species=V.NAMES,
        tpm_values="transcriptomic_data/TPM_RLE_postComBat.csv",
-       structure={
+       relationship={
            "ErbB1": ["EGFR"],
            "ErbB2": ["ERBB2"],
            "ErbB3": ["ERBB3"],
@@ -76,6 +85,7 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
            "DUSP": ["DUSP5", "DUSP6", "DUSP7"],
            "cMyc": ["MYC"],
        },
+       read_csv_kws={"index_col": "Description"}
    )
 
    ...
@@ -104,13 +114,6 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
        ...
    ```
 
-## Integration of TCGA and CCLE data
-
-```bash
-$ cd transcriptomic_data
-$ Rscript transcriptomic_data_integration.R
-```
-
 ## Individualization of the mechanistic model
 
 ### Use time-course datasets to train kinetic constants and weighting factors
@@ -123,11 +126,11 @@ $ Rscript transcriptomic_data_integration.R
    Text2Model("models/erbb_network.txt", lang="julia").to_biomass_model()
    ```
 
-1. Add time-series data to **experimental_data.jl**
+1. Add time-series data to [`experimental_data.jl`](training/erbb_network_jl/experimental_data.jl)
 
-1. Set an objective function to be minimized in **fitness.jl**
+1. Set an objective function to be minimized in [`fitness.jl`](training/erbb_network_jl/fitness.jl)
 
-1. Run **optimize_parallel.sh**
+1. Run [`optimize_parallel.sh`](training/optimize_parallel.sh)
 
    ```bash
    $ mv erbb_network_jl training
@@ -159,7 +162,7 @@ $ Rscript transcriptomic_data_integration.R
             f.startswith("TCGA_") or f.endswith("_BREAST")
         ):
             models.append(f)
-   # Set optimized parameter sets
+   # Set optimized parameters
    for model in models:
        shutil.copytree(
            os.path.join("training", "dat2npy", "out"),
