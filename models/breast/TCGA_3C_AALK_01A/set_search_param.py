@@ -11,7 +11,7 @@ incorporating_gene_expression_levels = Individualization(
     parameters=C.NAMES,
     species=V.NAMES,
     tpm_values="transcriptomic_data/TPM_RLE_postComBat.tar.xz",
-    structure={
+    relationship={
         "ErbB1": ["EGFR"],
         "ErbB2": ["ERBB2"],
         "ErbB3": ["ERBB3"],
@@ -33,6 +33,7 @@ incorporating_gene_expression_levels = Individualization(
         "DUSP": ["DUSP5", "DUSP6", "DUSP7"],
         "cMyc": ["MYC"],
     },
+    read_csv_kws={"index_col": "Description"},
 )
 
 
