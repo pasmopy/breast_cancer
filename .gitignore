@@ -30,6 +30,10 @@ transcriptomic_data/*.csv
 GDCdata
 *.rda
 
+# patient classification
+classification/*.csv
+subtype_classification.pdf
+
 # Python ---
 
 # Byte-compiled / optimized / DLL files
