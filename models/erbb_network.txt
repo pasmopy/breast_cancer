@@ -323,7 +323,7 @@ cMycPP is degraded
 # u: species
 @obs Phosphorylated_Akt = u[AktP]
 @obs Phosphorylated_ERK = u[ERKP] + u[ERKPP]
-@obs Phosphorylated_cMyc = u[cMycP] + u[cMycPP]
+@obs Phosphorylated_c-Myc = u[cMycP] + u[cMycPP]
 
 @sim tspan: [0, 120]
 @sim condition EGF: init[EGF] = 10.0; init[HRG] = 0.0

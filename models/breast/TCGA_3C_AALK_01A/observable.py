@@ -9,7 +9,7 @@ from .set_model import DifferentialEquation
 observables = [
     "Phosphorylated_Akt",
     "Phosphorylated_ERK",
-    "Phosphorylated_cMyc",
+    "Phosphorylated_c-Myc",
 ]
 
 
@@ -68,8 +68,10 @@ class NumericalSimulation(DifferentialEquation):
                 return False
             else:
                 self.simulations[observables.index("Phosphorylated_Akt"), :, i] = sol.y[V.AktP, :]
-                self.simulations[observables.index("Phosphorylated_ERK"), :, i] = sol.y[V.ERKP, :] + sol.y[V.ERKPP, :]
-                self.simulations[observables.index("Phosphorylated_cMyc"), :, i] = (
+                self.simulations[observables.index("Phosphorylated_ERK"), :, i] = (
+                    sol.y[V.ERKP, :] + sol.y[V.ERKPP, :]
+                )
+                self.simulations[observables.index("Phosphorylated_c-Myc"), :, i] = (
                     sol.y[V.cMycP, :] + sol.y[V.cMycPP, :]
                 )
 

@@ -1,7 +1,7 @@
 const observables = [
     "Phosphorylated_Akt",
     "Phosphorylated_ERK",
-    "Phosphorylated_cMyc",
+    "Phosphorylated_c-Myc",
 ]
 
 function observables_index(observable_name::String)::Union{Int,Nothing}

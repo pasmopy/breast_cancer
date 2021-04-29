@@ -236,7 +236,7 @@ skbr3_data_pcMyc = norm01(
     egf3=[624420, 636816, 875382, 972561, 1066021, 916545, 669543, 627495],
     hrg3=[624420, 511242, 678598, 826159, 933370, 839597, 600985, 610415],
 )
-experiments[observables_index("Phosphorylated_cMyc")] = Dict(
+experiments[observables_index("Phosphorylated_c-Myc")] = Dict(
     "MCF7_EGF" => mcf7_data_pcMyc[1],
     "MCF7_HRG" => mcf7_data_pcMyc[2],
     "BT474_EGF" => bt474_data_pcMyc[1],
@@ -246,7 +246,7 @@ experiments[observables_index("Phosphorylated_cMyc")] = Dict(
     "SKBR3_EGF" => skbr3_data_pcMyc[1],
     "SKBR3_HRG" => skbr3_data_pcMyc[2],
 )
-error_bars[observables_index("Phosphorylated_cMyc")] = Dict(
+error_bars[observables_index("Phosphorylated_c-Myc")] = Dict(
     "MCF7_EGF" => mcf7_data_pcMyc[3],
     "MCF7_HRG" => mcf7_data_pcMyc[4],
     "BT474_EGF" => bt474_data_pcMyc[3],
