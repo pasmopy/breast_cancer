@@ -8,7 +8,7 @@ from typing import List
 from pasmopy import PatientModelSimulations
 
 if sys.version_info[:2] < (3, 7):
-    raise RuntimeError("Python version >= 3.7 required.")
+    raise RuntimeError("`pasmopy` requires Python 3.7+ to run.")
 
 PATH_TO_MODELS: str = os.path.join("models", "breast")
 
@@ -79,5 +79,4 @@ def test_cleanup_models():
     for file in files:
         if file.endswith(".csv"):
             os.remove(os.path.join("classification", f"{file}"))
-    del files
     os.remove("subtype_classification.pdf")
