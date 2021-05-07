@@ -20,7 +20,7 @@ class Individualization(object):
     tpm_values : str
         Path to (1) RLE-normalized and (2) post ComBat TPM values (CSV-formatted).
 
-    relationship : Dict[str, List[str]]
+    gene_expression : Dict[str, List[str]]
         Pairs of proteins and their related genes.
 
     read_csv_kws : dict, optional
@@ -33,7 +33,7 @@ class Individualization(object):
     parameters: List[str]
     species: List[str]
     tpm_values: str
-    relationship: Dict[str, List[str]]
+    gene_expression: Dict[str, List[str]]
     read_csv_kws: Optional[dict] = field(default=None)
     prefix: str = field(default="w_", init=False)
 
@@ -42,7 +42,6 @@ class Individualization(object):
         if kwargs is None:
             kwargs = {}
         self._tpm_rle_postComBat: pd.DataFrame = pd.read_csv(self.tpm_values, **kwargs)
-        del kwargs
 
     @property
     def tpm_rle_postComBat(self):
@@ -72,8 +71,8 @@ class Individualization(object):
         weighted_sum : Dict[str, float]
             Estimated protein levels after incorporating transcriptomic data.
         """
-        weighted_sum = dict.fromkeys(self.relationship, 0.0)
-        for (protein, genes) in self.relationship.items():
+        weighted_sum = dict.fromkeys(self.gene_expression, 0.0)
+        for (protein, genes) in self.gene_expression.items():
             for gene in genes:
                 weighted_sum[protein] += x[
                     self.parameters.index(self.prefix + gene)
@@ -139,6 +138,6 @@ class Individualization(object):
             Cell-line- or patient-specific initial conditions.
         """
         weighted_sum = self._calculate_weighted_sum(id, x)
-        for protein in self.relationship.keys():
+        for protein in self.gene_expression.keys():
             y0[self.species.index(protein)] *= weighted_sum[protein]
         return y0

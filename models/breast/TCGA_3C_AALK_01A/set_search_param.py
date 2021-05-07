@@ -11,7 +11,7 @@ incorporating_gene_expression_levels = Individualization(
     parameters=C.NAMES,
     species=V.NAMES,
     tpm_values="transcriptomic_data/TPM_RLE_postComBat.tar.xz",
-    relationship={
+    gene_expression={
         "ErbB1": ["EGFR"],
         "ErbB2": ["ERBB2"],
         "ErbB3": ["ERBB3"],
