@@ -1,7 +1,7 @@
 import os
 
 import numpy as np
-from dyaus_dev import Individualization
+from pasmopy import Individualization
 
 from . import __path__
 from .name2idx import C, V
