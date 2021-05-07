@@ -1,17 +1,17 @@
 # breast_cancer
 
-[![Actions Status](https://github.com/dyaus-dev/breast_cancer/workflows/Tests/badge.svg)](https://github.com/dyaus-dev/breast_cancer/actions)
-[![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://github.com/dyaus-dev/breast_cancer/blob/master/LICENSE)
+[![Actions Status](https://github.com/pasmopy/breast_cancer/workflows/Tests/badge.svg)](https://github.com/pasmopy/breast_cancer/actions)
+[![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
 
 Workflow for classifying breast cancer subtypes based on intracellular signaling dynamics.
 
 ## Requirements
 
-| Language      | Dependent packages                                 |
-| ------------- | -------------------------------------------------- |
-| Python >= 3.7 | [dyaus](https://github.com/dyaus-dev/dyaus)        |
-| Julia >= 1.5  | [BioMASS.jl](https://github.com/himoto/BioMASS.jl) |
-| R >= 4.0      | TCGAbiolinks, sva, biomaRt, edgeR                  |
+| Language      | Dependent packages                                             |
+| ------------- | -------------------------------------------------------------- |
+| Python >= 3.7 | [pasmopy](https://github.com/pasmopy/pasmopy)                  |
+| Julia >= 1.5  | [BioMASS.jl](https://github.com/himoto/BioMASS.jl)             |
+| R >= 4.0      | TCGAbiolinks, sva, biomaRt, edgeR, ComplexHeatmap, viridisLite |
 
 ## Table of contents
 
@@ -34,10 +34,10 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
 
 ## Construction of a comprehensive model of the ErbB signaling network
 
-1. Use `dyaus.Text2Model` to build a mechanistic model
+1. Use `pasmopy.Text2Model` to build a mechanistic model
 
    ```python
-   from dyaus import Text2Model
+   from pasmopy import Text2Model
 
    Text2Model("models/erbb_network.txt").to_biomass_model()
    ```
@@ -53,7 +53,7 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
 
    import numpy as np
 
-   from dyaus import Individualization
+   from pasmopy import Individualization
 
    from . import __path__
    from .name2idx import C, V
@@ -63,7 +63,7 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
        parameters=C.NAMES,
        species=V.NAMES,
        tpm_values="transcriptomic_data/TPM_RLE_postComBat.csv",
-       relationship={
+       gene_expression={
            "ErbB1": ["EGFR"],
            "ErbB2": ["ERBB2"],
            "ErbB3": ["ERBB3"],
@@ -121,7 +121,7 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
 1. Build a mechanistic model for parameter estimation with BioMASS.jl
 
    ```python
-   from dyaus import Text2Model
+   from pasmopy import Text2Model
 
    Text2Model("models/erbb_network.txt", lang="julia").to_biomass_model()
    ```
@@ -172,13 +172,13 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
 
 ### Execute patient-specific models
 
-- Use `dyaus.PatientModelSimulations`
+- Use `pasmopy.PatientModelSimulations`
 
   ```python
   import os
   import shutil
 
-  from dyaus import PatientModelSimulations
+  from pasmopy import PatientModelSimulations
 
 
   with open (os.path.join("models", "breast", "sample_names.txt"), mode="r") as f:
@@ -210,8 +210,14 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
    )
    ```
 
-1. Visualize patient classification
+1. Visualize patient classification by executing [`brca_heatmap.R`](classification/brca_heatmap.R)
+
+   ```bash
+   $ cd classification
+   # $ Rscript brca_heatmap.R [n_cluster: int] [figsize: tuple]
+   $ Rscript brca_heatmap.R 6 8,5
+   ```
 
 ## License
 
-[Apache License 2.0](https://github.com/dyaus-dev/dyaus/blob/master/LICENSE)
+[Apache License 2.0](https://github.com/pasmopy/breast_cancer/blob/master/LICENSE)
