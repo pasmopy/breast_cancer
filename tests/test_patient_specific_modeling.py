@@ -5,7 +5,7 @@ import sys
 import time
 from typing import List
 
-from dyaus_dev import PatientModelSimulations
+from pasmopy import PatientModelSimulations
 
 if sys.version_info[:2] < (3, 7):
     raise RuntimeError("Python version >= 3.7 required.")
@@ -75,5 +75,9 @@ def test_cleanup_models():
     # parameter sets
     shutil.rmtree(os.path.join(path_to_patient("TCGA_3C_AALK_01A"), "out"))
     # patient classification
-    shutil.rmtree("classification")
+    files = os.listdir("classification")
+    for file in files:
+        if file.endswith(".csv"):
+            os.remove(os.path.join("classification", f"{file}"))
+    del files
     os.remove("subtype_classification.pdf")
