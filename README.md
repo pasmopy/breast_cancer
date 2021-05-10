@@ -1,50 +1,59 @@
 # breast_cancer
 
-[![Actions Status](https://github.com/dyaus-dev/breast_cancer/workflows/Tests/badge.svg)](https://github.com/dyaus-dev/breast_cancer/actions)
-[![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://github.com/dyaus-dev/breast_cancer/blob/master/LICENSE)
+[![Actions Status](https://github.com/pasmopy/breast_cancer/workflows/Tests/badge.svg)](https://github.com/pasmopy/breast_cancer/actions)
+[![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
 
 Workflow for classifying breast cancer subtypes based on intracellular signaling dynamics.
 
 ## Requirements
 
-| Language      | Dependent packages                                 |
-| ------------- | -------------------------------------------------- |
-| Python >= 3.7 | [dyaus](https://github.com/dyaus-dev/dyaus)        |
-| Julia >= 1.5  | [BioMASS.jl](https://github.com/himoto/BioMASS.jl) |
-| R >= 4.0      | TCGAbiolinks, sva, biomaRt, edgeR                  |
+| Language      | Dependent packages                                             |
+| ------------- | -------------------------------------------------------------- |
+| Python >= 3.7 | [pasmopy](https://github.com/pasmopy/pasmopy)                  |
+| Julia >= 1.5  | [BioMASS.jl](https://github.com/himoto/BioMASS.jl)             |
+| R >= 4.0      | TCGAbiolinks, sva, biomaRt, edgeR, ComplexHeatmap, viridisLite |
 
 ## Table of contents
 
-- [Construction](#construction-of-a-comprehensive-model-of-the-ErbB-signaling-network)
-
 - [Integration](#integration-of-tcga-and-ccle-data)
+
+- [Construction](#construction-of-a-comprehensive-model-of-the-ErbB-signaling-network)
 
 - [Individualization](#individualization-of-the-mechanistic-model)
 
 - [Classification](#subtype-classification-based-on-the-ErbB-signaling-dynamics)
 
+## Integration of TCGA and CCLE data
+
+- Run [`transcriptomic_data_integration.R`](transcriptomic_data/transcriptomic_data_integration.R)
+
+  ```bash
+  $ cd transcriptomic_data
+  $ Rscript transcriptomic_data_integration.R
+  ```
+
 ## Construction of a comprehensive model of the ErbB signaling network
 
-1. Use `dyaus.Text2Model` to build a mechanistic model
+1. Use `pasmopy.Text2Model` to build a mechanistic model
 
    ```python
-   from dyaus import Text2Model
+   from pasmopy import Text2Model
 
    Text2Model("models/erbb_network.txt").to_biomass_model()
    ```
 
-1. Rename **erbb_network/** to CCLE_name or TCGA_ID, e.g., **MCF7_BREAST** or **TCGA_3C_AALK_01A**
+1. Rename `erbb_network/` to CCLE_name or TCGA_ID, e.g., `MCF7_BREAST` or `TCGA_3C_AALK_01A`
 
-1. Add weighting factors for each gene (prefix: `"w_"`) to **name2idx/parameters.py**
+1. Add weighting factors for each gene (prefix: `"w_"`) to [`name2idx/parameters.py`](models/breast/TCGA_3C_AALK_01A/name2idx/parameters.py)
 
-1. Edit **set_search_param.py**
+1. Edit [`set_search_param.py`](models/breast/TCGA_3C_AALK_01A/set_search_param.py)
 
    ```python
    import os
 
    import numpy as np
 
-   from dyaus import Individualization
+   from pasmopy import Individualization
 
    from . import __path__
    from .name2idx import C, V
@@ -54,7 +63,7 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
        parameters=C.NAMES,
        species=V.NAMES,
        tpm_values="transcriptomic_data/TPM_RLE_postComBat.csv",
-       structure={
+       gene_expression={
            "ErbB1": ["EGFR"],
            "ErbB2": ["ERBB2"],
            "ErbB3": ["ERBB3"],
@@ -76,6 +85,7 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
            "DUSP": ["DUSP5", "DUSP6", "DUSP7"],
            "cMyc": ["MYC"],
        },
+       read_csv_kws={"index_col": "Description"}
    )
 
    ...
@@ -104,13 +114,6 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
        ...
    ```
 
-## Integration of TCGA and CCLE data
-
-```bash
-$ cd transcriptomic_data
-$ Rscript transcriptomic_data_integration.R
-```
-
 ## Individualization of the mechanistic model
 
 ### Use time-course datasets to train kinetic constants and weighting factors
@@ -118,16 +121,16 @@ $ Rscript transcriptomic_data_integration.R
 1. Build a mechanistic model for parameter estimation with BioMASS.jl
 
    ```python
-   from dyaus import Text2Model
+   from pasmopy import Text2Model
 
    Text2Model("models/erbb_network.txt", lang="julia").to_biomass_model()
    ```
 
-1. Add time-series data to **experimental_data.jl**
+1. Add time-series data to [`experimental_data.jl`](training/erbb_network_jl/experimental_data.jl)
 
-1. Set an objective function to be minimized in **fitness.jl**
+1. Set an objective function to be minimized in [`fitness.jl`](training/erbb_network_jl/fitness.jl)
 
-1. Run **optimize_parallel.sh**
+1. Run [`optimize_parallel.sh`](training/optimize_parallel.sh)
 
    ```bash
    $ mv erbb_network_jl training
@@ -159,7 +162,7 @@ $ Rscript transcriptomic_data_integration.R
             f.startswith("TCGA_") or f.endswith("_BREAST")
         ):
             models.append(f)
-   # Set optimized parameter sets
+   # Set optimized parameters
    for model in models:
        shutil.copytree(
            os.path.join("training", "dat2npy", "out"),
@@ -169,33 +172,52 @@ $ Rscript transcriptomic_data_integration.R
 
 ### Execute patient-specific models
 
-1. Use `dyaus.PatientModelSimulations`
+- Use `pasmopy.PatientModelSimulations`
 
-   ```python
-   import os
-   import shutil
+  ```python
+  import os
+  import shutil
 
-   from dyaus import PatientModelSimulations
+  from pasmopy import PatientModelSimulations
 
 
-   with open (os.path.join("models", "breast", "sample_names.txt"), mode="r") as f:
-       TCGA_ID = f.read().splitlines()
-   # Create patient-specific models
-   for patient in TCGA_ID:
-       if patient != "TCGA_3C_AALK_01A":
-           shutil.copytree(
-               os.path.join("models", "breast", "TCGA_3C_AALK_01A"),
-               os.path.join("models", "breast", f"{patient}"),
-           )
-   # Execute patient-specific models
-   simulations = PatientModelSimulations("models.breast", TCGA_ID)
-   simulations.run()
-   ```
+  with open (os.path.join("models", "breast", "sample_names.txt"), mode="r") as f:
+      TCGA_ID = f.read().splitlines()
+  # Create patient-specific models
+  for patient in TCGA_ID:
+      if patient != "TCGA_3C_AALK_01A":
+          shutil.copytree(
+              os.path.join("models", "breast", "TCGA_3C_AALK_01A"),
+              os.path.join("models", "breast", f"{patient}"),
+          )
+  # Execute patient-specific models
+  simulations = PatientModelSimulations("models.breast", TCGA_ID)
+  simulations.run()
+  ```
 
 ## Subtype classification based on the ErbB signaling dynamics
 
-[TODO] Write analysis procedure here.
+1. Extract response characteristics from patient-specific simulations
+
+   ```python
+   simulations.subtyping(
+       None,
+       {
+           "Phosphorylated_Akt": {"EGF": ["max"], "HRG": ["max"]},
+           "Phosphorylated_ERK": {"EGF": ["max"], "HRG": ["max"]},
+           "Phosphorylated_c-Myc": {"EGF": ["max"], "HRG": ["max"]},
+       }
+   )
+   ```
+
+1. Visualize patient classification by executing [`brca_heatmap.R`](classification/brca_heatmap.R)
+
+   ```bash
+   $ cd classification
+   # $ Rscript brca_heatmap.R [n_cluster: int] [figsize: tuple]
+   $ Rscript brca_heatmap.R 6 8,5
+   ```
 
 ## License
 
-[Apache License 2.0](https://github.com/dyaus-dev/dyaus/blob/master/LICENSE)
+[Apache License 2.0](https://github.com/pasmopy/breast_cancer/blob/master/LICENSE)

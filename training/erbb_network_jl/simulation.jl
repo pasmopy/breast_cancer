@@ -186,7 +186,7 @@ function simulate!(p::Vector{Float64}, u0::Vector{Float64})::Union{Bool,Nothing}
                 simulations[observables_index("Phosphorylated_ERK"),j,i] = (
                     sol.u[j][V.ERKP] + sol.u[j][V.ERKPP]
                 )
-                simulations[observables_index("Phosphorylated_cMyc"),j,i] = (
+                simulations[observables_index("Phosphorylated_c-Myc"),j,i] = (
                     sol.u[j][V.cMycP] + sol.u[j][V.cMycPP]
                 )
             end
