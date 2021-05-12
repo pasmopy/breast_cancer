@@ -155,15 +155,15 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
    import os
    import shutil
 
-   models = []
+   breast_cancer_models = []
    path_to_models = os.path.join("models", "breast")
    for f in os.listdir(path_to_models):
         if os.path.isdir(os.path.join(path_to_models, f)) and (
             f.startswith("TCGA_") or f.endswith("_BREAST")
         ):
-            models.append(f)
+            breast_cancer_models.append(f)
    # Set optimized parameters
-   for model in models:
+   for model in breast_cancer_models:
        shutil.copytree(
            os.path.join("training", "dat2npy", "out"),
            os.path.join(path_to_models, f"{model}", "out"),
@@ -180,6 +180,8 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
 
   from pasmopy import PatientModelSimulations
 
+  import models.breast
+
 
   with open (os.path.join("models", "breast", "sample_names.txt"), mode="r") as f:
       TCGA_ID = f.read().splitlines()
@@ -191,7 +193,7 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
               os.path.join("models", "breast", f"{patient}"),
           )
   # Execute patient-specific models
-  simulations = PatientModelSimulations("models.breast", TCGA_ID)
+  simulations = PatientModelSimulations(models.breast.__package__, TCGA_ID)
   simulations.run()
   ```
 
