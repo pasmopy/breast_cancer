@@ -7,14 +7,19 @@ from typing import List
 
 from pasmopy import PatientModelSimulations
 
+try:
+    import models.breast
+except ImportError:
+    print("can't import 'breast' from 'models'.")
+
 if sys.version_info[:2] < (3, 7):
     raise RuntimeError("`pasmopy` requires Python 3.7+ to run.")
 
 PATH_TO_MODELS: str = os.path.join("models", "breast")
 
 
-def path_to_patient(path: str) -> str:
-    return os.path.join(PATH_TO_MODELS, path)
+def path_to_patient(patient_id: str) -> str:
+    return os.path.join(PATH_TO_MODELS, patient_id)
 
 
 with open(path_to_patient("sample_names.txt"), mode="r") as f:
@@ -31,11 +36,11 @@ def test_patient_model_simulations():
     except FileNotFoundError:
         pass
     # Set optimized parameter sets
-    models: List[str] = []
+    breast_cancer_models: List[str] = []
     for f in os.listdir(PATH_TO_MODELS):
         if os.path.isdir(path_to_patient(f)) and (f.startswith("TCGA_") or f.endswith("_BREAST")):
-            models.append(f)
-    for model in models:
+            breast_cancer_models.append(f)
+    for model in breast_cancer_models:
         if os.path.isdir(os.path.join(path_to_patient(f"{model}"), "out")):
             shutil.rmtree(os.path.join(path_to_patient(f"{model}"), "out"))
         shutil.copytree(
@@ -47,7 +52,7 @@ def test_patient_model_simulations():
         if patient != "TCGA_3C_AALK_01A":
             shutil.copytree(path_to_patient("TCGA_3C_AALK_01A"), path_to_patient(f"{patient}"))
     # Execute patient-specific models
-    simulations = PatientModelSimulations("models.breast", random.sample(TCGA_ID, 10))
+    simulations = PatientModelSimulations(models.breast.__package__, random.sample(TCGA_ID, 10))
     start = time.time()
     assert simulations.run() is None
     elapsed = time.time() - start
