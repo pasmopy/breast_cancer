@@ -1,16 +1,17 @@
 import os
 import shutil
 
-os.chdir("drug_response")
-
 import pandas as pd
-from drug.database import CancerCellLineEncyclopedia
+from drug_response.drug.database import CancerCellLineEncyclopedia
 
 
 def test_create_figs():
+    for dir in ["dose_response", "activity_area"]:
+        if os.path.isdir(dir):
+            shutil.rmtree(dir)
     ccle = CancerCellLineEncyclopedia()
     erbb_expression_ratio = pd.read_csv(
-        os.path.join("data", "CCLE_receptor_ratio.csv"),
+        os.path.join("drug_response", "data", "CCLE_receptor_ratio.csv"),
         index_col=0,
     )
     compounds = list(set(ccle.drug_response_data["Compound"]))
@@ -24,7 +25,8 @@ def test_create_figs():
                     f"{ccle._convert_drug_name(compound)}.pdf",
                 )
             )
-            shutil.rmtree(dir)
 
 
-os.chdir("..")
+def test_cleanup():
+    for dir in ["dose_response", "activity_area"]:
+        shutil.rmtree(dir)
