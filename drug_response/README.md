@@ -18,8 +18,8 @@
 
 1. Calculation of the ErbB receptor expression ratio
 
-   ```
-   [TODO]
+   ```bash
+   $ Rscript data/calc_erbb_ratio.R
    ```
 
 1. Drug response analysis and visualization
@@ -30,9 +30,9 @@
 
    ccle = CancerCellLineEncyclopedia()
 
-   erbb_expression_ratio = pd.read_csv("./data/CCLE_receptor_ratio.csv", index_col=0)
+   erbb_expression_ratio = pd.read_csv("./data/ErbB_expression_ratio.csv", index_col=0)
 
-   compounds = ["Erlotinib", "Lapatinib", "ZD-6474", "AZD6244", "PD-0325901"]
+   compounds = ["Erlotinib", "Lapatinib", "AZD6244", "PD-0325901"]
 
    for compound in compounds:
        ccle.save_all(erbb_expression_ratio, compound)

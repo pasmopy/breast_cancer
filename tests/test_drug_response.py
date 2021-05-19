@@ -11,7 +11,7 @@ def test_create_figs():
             shutil.rmtree(dir)
     ccle = CancerCellLineEncyclopedia()
     erbb_expression_ratio = pd.read_csv(
-        os.path.join("drug_response", "data", "CCLE_receptor_ratio.csv"),
+        os.path.join("drug_response", "data", "ErbB_expression_ratio.csv"),
         index_col=0,
     )
     compounds = list(set(ccle.drug_response_data["Compound"]))
