@@ -15,13 +15,13 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
 
 ## Table of contents
 
-- [Integration](#integration-of-tcga-and-ccle-data)
+- [Transcriptomic data integration](#integration-of-tcga-and-ccle-data)
 
-- [Construction](#construction-of-a-comprehensive-model-of-the-ErbB-signaling-network)
+- [Model construction](#construction-of-a-comprehensive-model-of-the-ErbB-signaling-network)
 
-- [Individualization](#individualization-of-the-mechanistic-model)
+- [Individualization of the mechanistic model](#individualization-of-the-mechanistic-model)
 
-- [Classification](#subtype-classification-based-on-the-ErbB-signaling-dynamics)
+- [Subtype classification](#subtype-classification-based-on-the-ErbB-signaling-dynamics)
 
 ## Integration of TCGA and CCLE data
 
@@ -31,6 +31,8 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
   $ cd transcriptomic_data
   $ Rscript transcriptomic_data_integration.R
   ```
+
+  Output: `TPM_RLE_postComBat.csv`
 
 ## Construction of a comprehensive model of the ErbB signaling network
 
@@ -62,7 +64,7 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
    incorporating_gene_expression_levels = Individualization(
        parameters=C.NAMES,
        species=V.NAMES,
-       tpm_values="transcriptomic_data/TPM_RLE_postComBat.csv",
+       transcriptomic_data="transcriptomic_data/TPM_RLE_postComBat.csv",
        gene_expression={
            "ErbB1": ["EGFR"],
            "ErbB2": ["ERBB2"],
@@ -118,7 +120,7 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
 
 ### Use time-course datasets to train kinetic constants and weighting factors
 
-1. Build a mechanistic model for parameter estimation with BioMASS.jl
+1. Build a mechanistic model to identify model parameters
 
    ```python
    from pasmopy import Text2Model
@@ -136,20 +138,22 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
    $ mv erbb_network_jl training
    $ cd training
    $ mkdir errout
-   $ sh optimize_parallel.sh
+   $ sh optimize_parallel.sh  # It will take more than a few days to optimize parameters.
    $ cd ..
    ```
 
    When finished, run:
 
    ```julia
-   using BioMASS
+   $ julia
 
-   param2biomass("training")
+   julia> using BioMASS
+   julia> param2biomass("training")
    ```
 
-   And you will get **dat2npy/out/**. This is the optimized parameter sets that biomass can load.
-   Copy **out/** to each biomass model folder via:
+   And you will get [`dat2npy/out/`](https://github.com/pasmopy/breast_cancer/tree/master/training/erbb_network_jl/dat2npy/out).
+   This is the optimized parameter sets that [`biomass`](https://github.com/okadalabipr/biomass) can recognize and read.
+   Copy `out/` to each patient-specific model folder via:
 
    ```python
    import os

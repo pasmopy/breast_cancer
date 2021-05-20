@@ -34,6 +34,10 @@ GDCdata
 classification/*.csv
 subtype_classification.pdf
 
+# drug response analysis
+dose_response/
+activity_area/
+
 # Python ---
 
 # Byte-compiled / optimized / DLL files
