@@ -1,7 +1,7 @@
 using DataFrames, CSV
 
 
-const postComBat = CSV.read("./TPM_RLE_postComBat.csv", DataFrame);
+const postComBat = CSV.read("../transcriptomic_data/TPM_RLE_postComBat.csv", DataFrame);
 
 
 function get_tpm(gene::String, cell_line::String)::Float64
@@ -111,11 +111,11 @@ function incorporate_RSK(p::Vector{Float64}, cell_line::String)::Float64
             p[C.w_RPS6KA6] * get_tpm("RPS6KA6", cell_line))
 end =#
 
-#=
+#= 
 function incorporate_PP2A(p::Vector{Float64}, cell_line::String)::Float64
     return (p[C.w_PPP2CA] * get_tpm("PPP2CA", cell_line) +
             p[C.w_PPP2CB] * get_tpm("PPP2CB", cell_line))
-end=#
+end =#
 
 function incorporate_PTP1B(p::Vector{Float64}, cell_line::String)::Float64
     return p[C.w_PTPN1] * get_tpm("PTPN1", cell_line)
