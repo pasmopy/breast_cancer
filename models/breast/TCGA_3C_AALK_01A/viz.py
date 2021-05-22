@@ -193,7 +193,7 @@ class Visualization(object):
     @staticmethod
     def set_sensitivity_rcParams():
         """figure/sensitivity"""
-        plt.rcParams["font.size"] = 12
+        plt.rcParams["font.size"] = 20
         plt.rcParams["axes.linewidth"] = 1.2
         plt.rcParams["xtick.major.width"] = 1.2
         plt.rcParams["ytick.major.width"] = 1.2
