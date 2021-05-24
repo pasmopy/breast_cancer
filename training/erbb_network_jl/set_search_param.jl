@@ -1,3 +1,5 @@
+include("./load_csv.jl")
+
 # Specify model parameters and/or initial values to optimize
 function get_search_index()::Tuple{Array{Int64,1},Array{Int64,1}}
     # parameters

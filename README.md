@@ -9,7 +9,7 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
 
 | Language      | Dependent packages                                             |
 | ------------- | -------------------------------------------------------------- |
-| Python >= 3.7 | [pasmopy](https://github.com/pasmopy/pasmopy)                  |
+| Python >= 3.7 | See [`requirements.txt`](requirements.txt)                     |
 | Julia >= 1.5  | [BioMASS.jl](https://github.com/himoto/BioMASS.jl)             |
 | R >= 4.0      | TCGAbiolinks, sva, biomaRt, edgeR, ComplexHeatmap, viridisLite |
 
@@ -41,7 +41,7 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
    ```python
    from pasmopy import Text2Model
 
-   Text2Model("models/erbb_network.txt").to_biomass_model()
+   Text2Model("models/erbb_network.txt").convert()
    ```
 
 1. Rename `erbb_network/` to CCLE_name or TCGA_ID, e.g., `MCF7_BREAST` or `TCGA_3C_AALK_01A`
@@ -125,7 +125,7 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
    ```python
    from pasmopy import Text2Model
 
-   Text2Model("models/erbb_network.txt", lang="julia").to_biomass_model()
+   Text2Model("models/erbb_network.txt", lang="julia").convert()
    ```
 
 1. Add time-series data to [`experimental_data.jl`](training/erbb_network_jl/experimental_data.jl)
@@ -226,4 +226,4 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
 
 ## License
 
-[Apache License 2.0](https://github.com/pasmopy/breast_cancer/blob/master/LICENSE)
+[Apache License 2.0](LICENSE)
