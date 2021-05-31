@@ -18,7 +18,7 @@ const RELTOL = 1e-8
 normalization = Dict{String,Dict{}}()
 
 const dt = 1.0
-const t = collect(0.0:dt:120.0)  # 0, 1, 2, ..., 5400 [sec.]
+const t = collect(0.0:dt:120.0)
 
 const conditions = [
     "MCF7_EGF", "MCF7_HRG",
