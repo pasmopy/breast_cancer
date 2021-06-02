@@ -11,13 +11,13 @@ end
 
 
 # Cosine similarity
+#= 
 function compute_objval_cos(
         sim_data::Vector{Float64},
         exp_data::Vector{Float64})::Float64
     error::Float64 = 1.0 - dot(sim_data, exp_data) / (norm(sim_data) * norm(exp_data))
     return error
-end
-
+end =#
 
 function conditions_index(condition_name::String)::Union{Int,Nothing}
     if !(condition_name in Sim.conditions)
@@ -54,40 +54,6 @@ function objective(indiv_gene::Vector{Float64})::Float64
     (p, u0) = update_param(indiv)
 
     if Sim.simulate!(p, u0) isa Nothing
-        #= 
-        error::Vector{Float64} = zeros(length(observables))
-        for (i,obs_name) in enumerate(observables)
-            if isassigned(Exp.experiments,i)
-                if length(Sim.normalization) > 0
-                    norm_max::Float64 = (
-                        Sim.normalization[obs_name]["timepoint"] !== nothing ? maximum(
-                            Sim.simulations[
-                                i,
-                                Sim.normalization[obs_name]["timepoint"],
-                                [conditions_index(c) for c in Sim.normalization[obs_name]["condition"]]
-                            ]
-                        ) : maximum(
-                            Sim.simulations[
-                                i,
-                                :,
-                                [conditions_index(c) for c in Sim.normalization[obs_name]["condition"]]
-                            ]
-                        )
-                    )
-                end
-                error[i] = compute_objval_rss(
-                    diff_sim_and_exp(
-                        Sim.simulations[i,:,:],
-                        Exp.experiments[i],
-                        Exp.get_timepoint(obs_name),
-                        Sim.conditions,
-                        sim_norm_max = ifelse(
-                            length(Sim.normalization) == 0, 1.0, norm_max
-                        )
-                    )...
-                )
-            end
-        end =#
         error::Vector{Float64} = zeros(
             length(["MCF7", "BT474", "MDAMB231", "SKBR3"]) * length(observables) * length(["EGF", "HRG"])
         )
