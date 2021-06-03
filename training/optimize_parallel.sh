@@ -1,6 +1,6 @@
 #!/bin/sh
 
-for i in $(seq 1 10); do
+for i in $(seq 1 30); do
     nohup julia main.jl $i >> errout/$i.log 2>&1 &
 done
 
