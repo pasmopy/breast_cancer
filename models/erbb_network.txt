@@ -307,7 +307,7 @@ DUSPP_ERKP is dissociated into ERK and DUSPP |301|
 ERK binds DUSPP --> DUSPP_ERK |302|
 AktP phosphorylates GSK3b --> GSK3bP || GSK3b = 1
 GSK3bP is dephosphorylated --> GSK3b
-ERKPP transcribes PrecmycmRNA, repressed by cMycP | const n = 1
+ERKPP transcribes PrecmycmRNA, repressed by cMycP | const n = 1, const nF = 1
 PrecmycmRNA is translocated from nucleus into cytoplasm (0.22, 0.94) --> cmycmRNA | kr = 0
 cmycmRNA is degraded
 cmycmRNA is translated into cMyc
