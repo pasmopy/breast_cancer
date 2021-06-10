@@ -54,6 +54,15 @@ suppressWarnings(annotation$days_to_death <- as.numeric(annotation$days_to_death
 annotation[is.na(annotation)] <- 0
 
 
+#add prognosis information
+for (i in 1:nrow(annotation)){
+  if (annotation$days_to_death[i] == 0){
+    annotation$prognosis[i] <- 20
+  } else {
+    annotation$prognosis[i] <- floor(annotation$days_to_death[i]/365)
+  }
+}
+
 
 #heatmap
 dynamics_info_zscore <- dynamics_info  %>% column_to_rownames(var = "Sample") %>% scale()
