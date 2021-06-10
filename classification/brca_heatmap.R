@@ -54,35 +54,6 @@ suppressWarnings(annotation$days_to_death <- as.numeric(annotation$days_to_death
 annotation[is.na(annotation)] <- 0
 
 
-#add prognosis information
-for (i in 1:nrow(annotation)){
-  if (annotation$days_to_death[i] == 0){
-    annotation$prognosis[i] <- 20
-  } else if (annotation$days_to_death[i] < 365 & annotation$days_to_death[i] > 0) {
-    annotation$prognosis[i] <- 1
-  } else if (annotation$days_to_death[i] > 366 & annotation$days_to_death[i] < 730){
-    annotation$prognosis[i] <- 2
-  } else if (annotation$days_to_death[i] > 731 & annotation$days_to_death[i] < 1095){
-    annotation$prognosis[i] <- 3
-  } else if (annotation$days_to_death[i] > 1096 & annotation$days_to_death[i] < 1825){
-    annotation$prognosis[i] <- 4
-  } else if (annotation$days_to_death[i] > 1826 & annotation$days_to_death[i] < 2190){
-    annotation$prognosis[i] <- 5
-  } else if (annotation$days_to_death[i] > 2191 & annotation$days_to_death[i] < 2555){
-    annotation$prognosis[i] <- 6
-  } else if (annotation$days_to_death[i] > 2556 & annotation$days_to_death[i] < 2920){
-    annotation$prognosis[i] <- 7
-  } else if (annotation$days_to_death[i] > 2921 & annotation$days_to_death[i] < 3650){
-    annotation$prognosis[i] <- 8
-  } else if (annotation$days_to_death[i] > 3651 & annotation$days_to_death[i] < 4015){
-    annotation$prognosis[i] <- 9
-  } else if (annotation$days_to_death[i] > 4016 & annotation$days_to_death[i] < 4380){
-    annotation$prognosis[i] <- 10
-  } else if (annotation$days_to_death[i] > 4381){
-    annotation$prognosis[i] <- 11
-  }
-}
-
 
 #heatmap
 dynamics_info_zscore <- dynamics_info  %>% column_to_rownames(var = "Sample") %>% scale()
