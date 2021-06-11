@@ -1,7 +1,4 @@
-# breast_cancer
-
-[![Actions Status](https://github.com/pasmopy/breast_cancer/workflows/Tests/badge.svg)](https://github.com/pasmopy/breast_cancer/actions)
-[![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](https://opensource.org/licenses/Apache-2.0)
+# Breast cancer [![Actions Status](https://github.com/pasmopy/breast_cancer/workflows/Tests/badge.svg)](https://github.com/pasmopy/breast_cancer/actions)
 
 Workflow for classifying breast cancer subtypes based on intracellular signaling dynamics.
 
@@ -10,18 +7,20 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
 | Language      | Dependent packages                                             |
 | ------------- | -------------------------------------------------------------- |
 | Python >= 3.7 | See [`requirements.txt`](requirements.txt)                     |
-| Julia >= 1.5  | [BioMASS.jl](https://github.com/himoto/BioMASS.jl)             |
+| Julia >= 1.5  | [BioMASS.jl](https://github.com/biomass-dev/BioMASS.jl)        |
 | R >= 4.0      | TCGAbiolinks, sva, biomaRt, edgeR, ComplexHeatmap, viridisLite |
 
 ## Table of contents
 
-- [Transcriptomic data integration](#integration-of-tcga-and-ccle-data)
+- [Integration of TCGA and CCLE data](#integration-of-tcga-and-ccle-data)
 
-- [Model construction](#construction-of-a-comprehensive-model-of-the-ErbB-signaling-network)
+- [Construction of a comprehensive model of the ErbB signaling network](#construction-of-a-comprehensive-model-of-the-ErbB-signaling-network)
 
 - [Individualization of the mechanistic model](#individualization-of-the-mechanistic-model)
 
-- [Subtype classification](#subtype-classification-based-on-the-ErbB-signaling-dynamics)
+- [Subtype classification based on the ErbB signaling dynamics](#subtype-classification-based-on-the-ErbB-signaling-dynamics)
+
+- [Investigation of patient-specific pathway activities](#investigation-of-patient-specific-pathway-activities)
 
 ## Integration of TCGA and CCLE data
 
@@ -144,15 +143,17 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
 
    When finished, run:
 
-   ```julia
+   ```bash
    $ julia
+   ```
 
-   julia> using BioMASS
-   julia> param2biomass("training")
+   ```julia
+   using BioMASS
+   param2biomass("training")
    ```
 
    And you will get [`dat2npy/out/`](https://github.com/pasmopy/breast_cancer/tree/master/training/erbb_network_jl/dat2npy/out).
-   This is the optimized parameter sets that [`biomass`](https://github.com/okadalabipr/biomass) can recognize and read.
+   This is the optimized parameter sets that [`biomass`](https://github.com/biomass-dev/biomass) can recognize and read.
    Copy `out/` to each patient-specific model folder via:
 
    ```python
@@ -169,7 +170,7 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
    # Set optimized parameters
    for model in breast_cancer_models:
        shutil.copytree(
-           os.path.join("training", "dat2npy", "out"),
+           os.path.join("training", "erbb_network_jl", "dat2npy", "out"),
            os.path.join(path_to_models, f"{model}", "out"),
        )
    ```
@@ -223,6 +224,58 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
    # $ Rscript brca_heatmap.R [n_cluster: int] [figsize: tuple]
    $ Rscript brca_heatmap.R 6 8,5
    ```
+
+## Investigation of patient-specific pathway activities
+
+### Sensitivity analysis
+
+- Calculate sensitivity coefficients by varying the amount of each nonzero species
+
+  ```python
+  from pasmopy import PatientModelAnalyses
+
+  import models.breast
+
+  with open ("selected_tnbc.txt" mode="r") as f:
+      TNBC_ID = f.read().splitlines()
+  analyses = PatientModelAnalyses(
+      models.breast.__package__,
+      TNBC_ID,
+      biomass_kws={
+          "metric": "maximum", "style": "heatmap", "options": {"excluded_initials": ["PIP2"]}
+      },
+  )
+  ```
+
+### Drug response data analysis
+
+1. Calculation of the ErbB receptor expression ratio
+
+   ```bash
+   $ cd drug_response
+   $ Rscript data/calc_erbb_ratio.R
+   ```
+
+1. Drug response analysis and visualization
+
+   ```python
+   import pandas as pd
+   from drug.database import CancerCellLineEncyclopedia
+
+   ccle = CancerCellLineEncyclopedia()
+
+   erbb_expression_ratio = pd.read_csv("./data/ErbB_expression_ratio.csv", index_col=0)
+
+   compounds = ["Erlotinib", "Lapatinib", "AZD6244", "PD-0325901"]
+
+   for compound in compounds:
+       ccle.save_all(erbb_expression_ratio, compound)
+   ```
+
+## Author
+
+- Hiroaki Imoto
+- Sawa Yamashiro
 
 ## License
 
