@@ -25,15 +25,17 @@
 1. Drug response analysis and visualization
 
    ```python
+   import os
    import pandas as pd
    from drug.database import CancerCellLineEncyclopedia
 
    ccle = CancerCellLineEncyclopedia()
 
-   erbb_expression_ratio = pd.read_csv("./data/ErbB_expression_ratio.csv", index_col=0)
-
+   erbb_expression_ratio = pd.read_csv(
+      os.path.join("data", "ErbB_expression_ratio.csv"),
+      index_col=0
+   )
    compounds = ["Erlotinib", "Lapatinib", "AZD6244", "PD-0325901"]
-
    for compound in compounds:
        ccle.save_all(erbb_expression_ratio, compound)
    ```

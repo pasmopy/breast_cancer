@@ -38,9 +38,12 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
 1. Use `pasmopy.Text2Model` to build a mechanistic model
 
    ```python
+   import os
+
    from pasmopy import Text2Model
 
-   Text2Model("models/erbb_network.txt").convert()
+
+   Text2Model(os.path.join("models", "erbb_network.txt")).convert()
    ```
 
 1. Rename `erbb_network/` to CCLE_name or TCGA_ID, e.g., `MCF7_BREAST` or `TCGA_3C_AALK_01A`
@@ -59,11 +62,12 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
    from . import __path__
    from .name2idx import C, V
    from .set_model import initial_values, param_values
+   
 
    incorporating_gene_expression_levels = Individualization(
        parameters=C.NAMES,
        species=V.NAMES,
-       transcriptomic_data="transcriptomic_data/TPM_RLE_postComBat.csv",
+       transcriptomic_data=os.path.join("transcriptomic_data", "TPM_RLE_postComBat.csv"),
        gene_expression={
            "ErbB1": ["EGFR"],
            "ErbB2": ["ERBB2"],
@@ -122,9 +126,12 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
 1. Build a mechanistic model to identify model parameters
 
    ```python
+   import os
+
    from pasmopy import Text2Model
 
-   Text2Model("models/erbb_network.txt", lang="julia").convert()
+
+   Text2Model(os.path.join("models", "erbb_network.txt"), lang="julia").convert()
    ```
 
 1. Add time-series data to [`experimental_data.jl`](training/erbb_network_jl/experimental_data.jl)
@@ -149,16 +156,18 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
 
    ```julia
    using BioMASS
+
    param2biomass("training")
    ```
 
    And you will get [`dat2npy/out/`](https://github.com/pasmopy/breast_cancer/tree/master/training/erbb_network_jl/dat2npy/out).
-   This is the optimized parameter sets that [`biomass`](https://github.com/biomass-dev/biomass) can recognize and read.
+   This is the estimated parameter sets that [`biomass`](https://github.com/biomass-dev/biomass) can recognize and read.
    Copy `out/` to each patient-specific model folder via:
 
    ```python
    import os
    import shutil
+
 
    breast_cancer_models = []
    path_to_models = os.path.join("models", "breast")
@@ -259,15 +268,19 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
 1. Drug response analysis and visualization
 
    ```python
+   import os
+
    import pandas as pd
    from drug.database import CancerCellLineEncyclopedia
 
+
    ccle = CancerCellLineEncyclopedia()
 
-   erbb_expression_ratio = pd.read_csv("./data/ErbB_expression_ratio.csv", index_col=0)
-
+   erbb_expression_ratio = pd.read_csv(
+       os.path.join("data", "ErbB_expression_ratio.csv"),
+       index_col=0
+    )
    compounds = ["Erlotinib", "Lapatinib", "AZD6244", "PD-0325901"]
-
    for compound in compounds:
        ccle.save_all(erbb_expression_ratio, compound)
    ```
