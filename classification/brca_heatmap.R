@@ -28,7 +28,7 @@ for(i in 1:length(list.files(path, pattern = "csv"))){
     temp <- list.files(path, pattern = "csv")[i]
     read_temp <- data.frame(lapply(temp, read.csv))
     colnames(read_temp)[-1] <- paste(str_sub(temp, end = -5), colnames(read_temp)[-1], sep = "_")
-    dynamics_info <- cbind(dynamics_info, read_temp[,-1])
+    dynamics_info <- cbind(dynamics_info, subset(read_temp, select = -1))
   }
 }
 
