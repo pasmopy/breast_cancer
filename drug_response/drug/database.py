@@ -129,6 +129,7 @@ class CancerCellLineEncyclopedia(object):
         erbb_expression_ratio: pd.DataFrame,
         drug: str,
         *,
+        config: Optional[dict] = None,
         show_individual: bool = False,
         error: str = "std",
         save_format: str = "pdf",
@@ -162,14 +163,17 @@ class CancerCellLineEncyclopedia(object):
             [drug] * len(bottom30),
         )
         
-        plt.figure(figsize=(7, 5))
-        plt.rcParams['font.size'] = 24
-        plt.rcParams['font.family'] = 'Arial'
-        plt.rcParams['axes.linewidth'] = 2.4
-        plt.rcParams['xtick.major.width'] = 2.4
-        plt.rcParams['ytick.major.width'] = 2.4
-        plt.rcParams['lines.linewidth'] = 3
-        plt.rcParams["lines.markersize"] = 1
+        if config is None:
+            config = {}
+        config.setdefault('figure.figsize', (7, 5))
+        config.setdefault('font.size', 24)
+        config.setdefault('font.family', 'Arial')
+        config.setdefault('axes.linewidth', 2.4)
+        config.setdefault('xtick.major.width', 2.4)
+        config.setdefault('ytick.major.width', 2.4)
+        config.setdefault('lines.linewidth', 3)
+        config.setdefault("lines.markersize", 1)
+        plt.rcParams.update(config)
         plt.gca().spines["right"].set_visible(False)
         plt.gca().spines["top"].set_visible(False)
 
@@ -279,6 +283,7 @@ class CancerCellLineEncyclopedia(object):
         erbb_expression_ratio: pd.DataFrame,
         drug: str,
         *,
+        config: Optional[dict] = None,
         save_format: str = "pdf",
     ) -> None:
         self._check_args(drug, save_format)
@@ -315,15 +320,20 @@ class CancerCellLineEncyclopedia(object):
             ],
         )
 
-        plt.figure(figsize=(3, 5))
-        plt.rcParams['font.family'] = 'Arial'
-        plt.rcParams['mathtext.it'] = 'Arial:italic'
-        plt.rcParams['font.size'] = 24
-        plt.rcParams['axes.linewidth'] = 2.4
-        plt.rcParams['xtick.major.width'] = 2.4
-        plt.rcParams['ytick.major.width'] = 2.4
-        plt.rcParams['lines.linewidth'] = 1.8
-        plt.rcParams['lines.markersize'] = 11
+        if config is None:
+            config = {}
+        config.setdefault('figure.figsize', (3, 5))
+        config.setdefault('font.family', 'Arial')
+        config.setdefault('mathtext.it', 'Arial:italic')
+        config.setdefault('font.size', 24)
+        config.setdefault('axes.linewidth', 2.4)
+        config.setdefault('xtick.major.width', 2.4)
+        config.setdefault('ytick.major.width', 2.4)
+        config.setdefault('lines.linewidth', 1.8)
+        config.setdefault('lines.markersize', 11)
+
+        plt.rcParams.update(config)
+
         plt.gca().spines["right"].set_visible(False)
         plt.gca().spines["top"].set_visible(False)
 
@@ -333,10 +343,9 @@ class CancerCellLineEncyclopedia(object):
             data=(activity_area[0], activity_area[1]),
             palette=sns.color_palette(['darkmagenta', 'goldenrod']),
         )
-        #sns.stripplot(data=(activity_area[0], activity_area[1]),color=".26")
-        sns.swarmplot(data=(activity_area[0], activity_area[1]),color=".48")
-        #sns.boxenplot(data=(activity_area[0], activity_area[1]), palette=sns.color_palette(['#76106cff', '#f7a426ff']))
-        #sns.violinplot(data=(activity_area[0], activity_area[1]), palette=sns.color_palette(['mediumslateblue', 'tomato']))
+        sns.swarmplot(
+            data=(activity_area[0], activity_area[1]),color=".48"
+        )
         plt.xticks([0, 1], ["EGFR\nhigh", "EGFR\nlow"])
         plt.ylabel("Activity area", fontsize=28)
         plt.suptitle(
@@ -360,7 +369,19 @@ class CancerCellLineEncyclopedia(object):
         erbb_expression_ratio: pd.DataFrame,
         drug: str,
         *,
+        config_dose_response_curve: Optional[dict] = None,
+        config_activity_area: Optional[dict] = None,
         save_format: str = "pdf",
     ) -> None:
-        self.save_dose_response_curve(erbb_expression_ratio, drug, save_format=save_format)
-        self.save_activity_area(erbb_expression_ratio, drug, save_format=save_format)
+        self.save_dose_response_curve(
+            erbb_expression_ratio,
+            drug,
+            config=config_dose_response_curve,
+            save_format=save_format,
+        )
+        self.save_activity_area(
+            erbb_expression_ratio,
+            drug,
+            config=config_activity_area,
+            save_format=save_format,
+        )
