@@ -96,11 +96,8 @@ class PatientModelSimulations(InSilico):
         if kwargs is None:
             kwargs = {}
         kwargs.setdefault("viz_type", "average")
-        kwargs.setdefault("show_all", False)
         kwargs.setdefault("stdev", True)
-        kwargs.setdefault("save_format", "pdf")
-        kwargs.setdefault("param_range", None)
-
+        
         model = Model(".".join([self.path_to_models, patient.strip()])).create()
         run_simulation(model, **kwargs)
 
