@@ -85,11 +85,6 @@ class PatientModelSimulations(InSilico):
     def _run_single_patient(self, patient: str) -> None:
         """
         Run a single patient-specifc model simulation.
-
-        Parameters
-        ----------
-        patient : str
-            Name (ID) of each patient.
         """
 
         kwargs = self.biomass_kws
@@ -97,20 +92,21 @@ class PatientModelSimulations(InSilico):
             kwargs = {}
         kwargs.setdefault("viz_type", "average")
         kwargs.setdefault("stdev", True)
-        
+
         model = Model(".".join([self.path_to_models, patient.strip()])).create()
         run_simulation(model, **kwargs)
 
-    def run(self, n_proc: int = multiprocessing.cpu_count() - 1) -> None:
+    def run(self, n_proc: Optional[int] = None) -> None:
         """
         Run simulations of multiple patient-specific models in parallel.
 
         Parameters
         ----------
-        n_proc : int (default: multiprocessing.cpu_count() - 1)
+        n_proc : int, optional
             The number of worker processes to use.
         """
-
+        if n_proc is None:
+            n_proc = multiprocessing.cpu_count() - 1
         self.parallel_execute(self._run_single_patient, n_proc)
 
     @staticmethod
@@ -140,6 +136,11 @@ class PatientModelSimulations(InSilico):
         Extract response characteristics from patient-specific signaling dynamics.
         """
         os.makedirs("classification", exist_ok=True)
+        # cleanup csv
+        files = os.listdir("classification")
+        for file in files:
+            if file.endswith(".csv"):
+                os.remove(os.path.join("classification", f"{file}"))
         for obs_name, conditions_and_metrics in dynamic_characteristics.items():
             with open(
                 os.path.join("classification", f"{obs_name}.csv"),
@@ -153,7 +154,7 @@ class PatientModelSimulations(InSilico):
                         header.append(f"{condition}_{metric}")
                 writer.writerow(header)
 
-                for patient in self.patients:
+                for patient in tqdm(self.patients):
                     patient_specific = Model(
                         ".".join([self.path_to_models, patient.strip()])
                     ).create()
@@ -164,13 +165,14 @@ class PatientModelSimulations(InSilico):
                             "simulations_all.npy",
                         )
                     )
-                    data = np.array(all_data[patient_specific.obs.index(obs_name)])
+                    data = np.array(all_data[patient_specific.observables.index(obs_name)])
                     if normalization:
                         for i in range(data.shape[0]):
-                            if not np.isnan(data[i]).all():
+                            if not np.isnan(data[i]).all() and not np.all(data[i] == 0.0):
                                 data[i] /= np.nanmax(data[i])
                         data = np.nanmean(data, axis=0)
-                        data /= np.max(data)
+                        if not np.all(data == 0.0):
+                            data /= np.max(data)
                     patient_specific_characteristics = [patient]
                     for h in header[1:]:
                         condition, metric = h.split("_")
@@ -207,24 +209,25 @@ class PatientModelSimulations(InSilico):
         normalization : bool (default: True)
             Whether to perform max-normalization.
 
-        clustermap_kws : dict, optional (default: None)
+        clustermap_kws : dict, optional
             Keyword arguments to pass to seaborn.clustermap().
 
         Examples
         --------
         >>> with open ("models/breast/sample_names.txt", mode="r") as f:
-                TCGA_ID = f.read().splitlines()
+        ...    TCGA_ID = f.read().splitlines()
         >>> from pasmopy import PatientModelSimulations
         >>> simulations = PatientModelSimulations("models.breast", TCGA_ID)
         >>> simulations.subtyping(
-                "subtype_classification.pdf",
-                {
-                    "Phosphorylated_Akt": {"EGF": ["max"], "HRG": ["max"]},
-                    "Phosphorylated_ERK": {"EGF": ["max"], "HRG": ["max"]},
-                    "Phosphorylated_c-Myc": {"EGF": ["max"], "HRG": ["max"]},
-                },
-                clustermap_kws={"figsize": (9, 12)}
-            )
+        ...    "subtype_classification.pdf",
+        ...    {
+        ...        "Phosphorylated_Akt": {"EGF": ["max"], "HRG": ["max"]},
+        ...        "Phosphorylated_ERK": {"EGF": ["max"], "HRG": ["max"]},
+        ...        "Phosphorylated_c-Myc": {"EGF": ["max"], "HRG": ["max"]},
+        ...    },
+        ...    clustermap_kws={"figsize": (9, 12)}
+        ... )
+
         """
         # seaborn clustermap
         if clustermap_kws is None:
@@ -238,11 +241,11 @@ class PatientModelSimulations(InSilico):
             characteristics: List[pd.DataFrame] = []
             files = os.listdir("classification")
             for file in files:
-                obs, ext = os.path.splitext(file)
+                observable, ext = os.path.splitext(file)
                 if ext == ".csv":
                     df = pd.read_csv(os.path.join("classification", file), index_col="Sample")
                     characteristics.append(
-                        df.rename(columns=lambda s: obs.replace("_", " ") + "_" + s)
+                        df.rename(columns=lambda s: observable.replace("_", " ") + "_" + s)
                     )
             all_info = pd.concat(characteristics, axis=1)
             all_info.index.name = ""
@@ -266,11 +269,6 @@ class PatientModelAnalyses(InSilico):
     def _run_single_patient(self, patient: str) -> None:
         """
         Run a single patient-specifc model analysis.
-
-        Parameters
-        ----------
-        patient : str
-            Name (ID) of each patient.
         """
 
         kwargs = self.biomass_kws
@@ -284,14 +282,15 @@ class PatientModelAnalyses(InSilico):
         model = Model(".".join([self.path_to_models, patient.strip()])).create()
         run_analysis(model, **kwargs)
 
-    def run(self, n_proc: int = multiprocessing.cpu_count() - 1) -> None:
+    def run(self, n_proc: Optional[int] = None) -> None:
         """
         Run analyses of multiple patient-specific models in parallel.
 
         Parameters
         ----------
-        n_proc : int (default: multiprocessing.cpu_count() - 1)
+        n_proc : int, optional
             The number of worker processes to use.
         """
-
+        if n_proc is None:
+            n_proc = multiprocessing.cpu_count() - 1
         self.parallel_execute(self._run_single_patient, n_proc)
