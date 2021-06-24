@@ -178,7 +178,7 @@ class PatientModelSimulations(InSilico):
                         condition, metric = h.split("_")
                         patient_specific_characteristics.append(
                             self._calc_response_characteristics(
-                                data[:, patient_specific.sim.conditions.index(condition)],
+                                data[:, patient_specific.problem.conditions.index(condition)],
                                 metric,
                             )
                         )
