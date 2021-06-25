@@ -123,6 +123,54 @@ class CancerCellLineEncyclopedia(object):
             )
         if save_format not in ["pdf", "png"]:
             raise ValueError("save_format must be either 'pdf' of 'png'.")
+    
+    @staticmethod
+    def _plot_dose_response_curve(
+        x: List[float],
+        population: List[DrugResponse],
+        color: str,
+        label: str,
+        show_individual: bool,
+        error :str,
+    ):
+        if show_individual:
+            for i, _ in enumerate(population):
+                plt.plot(
+                    x,
+                    np.interp(x, population[i].doses, population[i].activity_data) + 100,
+                    "o",
+                    color=color,
+                )
+        y_mean = np.mean(
+            [
+                (np.interp(x, population[i].doses, population[i].activity_data) + 100)
+                for i, _ in enumerate(population)
+            ],
+            axis=0
+        )
+        y_err = np.std(
+            [
+                (np.interp(x, population[i].doses, population[i].activity_data) + 100)
+                for i, _ in enumerate(population)
+            ],
+            axis=0,
+            ddof=1
+        ) / (1 if error == "std" else np.sqrt(len(population)))
+        plt.plot(
+            x,
+            y_mean,
+            "-",
+            color=color,
+            label=label,
+        )
+        plt.fill_between(
+            x,
+            y_mean - y_err,
+            y_mean + y_err,
+            lw=0,
+            color=color,
+            alpha=0.1,
+        )
 
     def save_dose_response_curve(
         self,
@@ -179,82 +227,13 @@ class CancerCellLineEncyclopedia(object):
 
         DOSE = [2.50e-03, 8.00e-03, 2.50e-02, 8.00e-02, 2.50e-01, 8.00e-01, 2.53e+00, 8.00e+00]
 
-        if show_individual:
-            for i, _ in enumerate(egfr_high):
-                plt.plot(
-                    DOSE,
-                    np.interp(DOSE, egfr_high[i].doses, egfr_high[i].activity_data) + 100,
-                    "o",
-                    color="darkmagenta",
-                )
-        y_mean = np.mean(
-            [
-                (np.interp(DOSE, egfr_high[i].doses, egfr_high[i].activity_data) + 100)
-                for i, _ in enumerate(egfr_high)
-            ],
-            axis=0
+        self._plot_dose_response_curve(
+            DOSE, egfr_high, color="darkmagenta", label="EGFR high",
+            show_individual=show_individual, error=error
         )
-        y_err = np.std(
-            [
-                (np.interp(DOSE, egfr_high[i].doses, egfr_high[i].activity_data) + 100)
-                for i, _ in enumerate(egfr_high)
-            ],
-            axis=0,
-            ddof=1
-        ) / (1 if error == "std" else np.sqrt(len(egfr_high)))
-        plt.plot(
-            DOSE,
-            y_mean,
-            "-",
-            color="darkmagenta",
-            label="EGFR high",
-        )
-        plt.fill_between(
-            DOSE,
-            y_mean - y_err,
-            y_mean + y_err,
-            lw=0,
-            color="darkmagenta",
-            alpha=0.1,
-        )
-
-        if show_individual:
-            for i, _ in enumerate(egfr_low):
-                plt.plot(
-                    DOSE,
-                    np.interp(DOSE, egfr_low[i].doses, egfr_low[i].activity_data) + 100,
-                    "o",
-                    color="goldenrod",
-                )
-        y_mean = np.mean(
-            [
-                (np.interp(DOSE, egfr_low[i].doses, egfr_low[i].activity_data) + 100)
-                for i, _ in enumerate(egfr_low)
-            ],
-            axis=0
-        )
-        y_err = np.std(
-            [
-                (np.interp(DOSE, egfr_low[i].doses, egfr_low[i].activity_data) + 100)
-                for i, _ in enumerate(egfr_low)
-            ],
-            axis=0,
-            ddof=1
-        ) / (1 if error == "std" else np.sqrt(len(egfr_high)))
-        plt.plot(
-            DOSE,
-            y_mean,
-            "-",
-            color="goldenrod",
-            label="EGFR low",
-        )
-        plt.fill_between(
-            DOSE,
-            y_mean - y_err,
-            y_mean + y_err,
-            lw=0,
-            color="goldenrod",
-            alpha=0.1,
+        self._plot_dose_response_curve(
+            DOSE, egfr_low, color="goldenrod", label="EGFR low",
+            show_individual=show_individual, error=error 
         )
 
         plt.xscale("log")
