@@ -7,7 +7,7 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
 | Language      | Dependent packages                                             |
 | ------------- | -------------------------------------------------------------- |
 | Python >= 3.7 | See [`requirements.txt`](requirements.txt)                     |
-| Julia >= 1.5  | [BioMASS.jl](https://github.com/biomass-dev/BioMASS.jl)        |
+| Julia >= 1.5  | [`BioMASS.jl==0.5.0`](https://github.com/biomass-dev/BioMASS.jl)        |
 | R >= 4.0      | TCGAbiolinks, sva, biomaRt, edgeR, ComplexHeatmap, viridisLite |
 
 ## Table of contents
@@ -241,11 +241,14 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
 - Calculate sensitivity coefficients by varying the amount of each nonzero species
 
   ```python
+  import os
+
   from pasmopy import PatientModelAnalyses
 
   import models.breast
+  
 
-  with open ("selected_tnbc.txt" mode="r") as f:
+  with open (os.path.join("models", "breast", "selected_tnbc.txt"), mode="r") as f:
       TNBC_ID = f.read().splitlines()
   analyses = PatientModelAnalyses(
       models.breast.__package__,
