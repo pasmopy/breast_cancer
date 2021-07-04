@@ -1,6 +1,6 @@
 using BioMASS
 
-const model = load_model("erbb_network_jl")
+const model = Model("erbb_network_jl")
 
 if abspath(PROGRAM_FILE) == @__FILE__
     optimize(

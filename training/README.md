@@ -6,7 +6,7 @@ Using experimental datasets obtained from breast cancer cell lines to identify m
 
 | Language                            | Package                                                   | Desctiption                                                                                                           |
 | ----------------------------------- | --------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| [Julia 1.5+](https://julialang.org) | [`BioMASS.jl`](https://github.com/biomass-dev/BioMASS.jl) | This module provides a Julia interface to the [biomass](https://github.com/biomass-dev/biomass) parameter estimation. |
+| [Julia 1.5+](https://julialang.org) | [`BioMASS.jl==0.5.0`](https://github.com/biomass-dev/BioMASS.jl) | This module provides a Julia interface to the [biomass](https://github.com/biomass-dev/biomass) parameter estimation. |
 
 ### Run optimization
 
