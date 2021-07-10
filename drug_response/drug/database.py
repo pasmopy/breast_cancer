@@ -115,14 +115,12 @@ class CancerCellLineEncyclopedia(object):
             )
         return drug_response_info
     
-    def _check_args(self, drug: str, save_format: str) -> Optional[NoReturn]:
+    def _check_args(self, drug: str) -> Optional[NoReturn]:
         if drug not in set(self.drug_response_data["Compound"]):
             raise ValueError(
                 f"{drug} doesn't exist in the CCLE drug response data.\n"
                 f"Should be one of {', '.join(list(set(self.drug_response_data['Compound'])))}"
             )
-        if save_format not in ["pdf", "png"]:
-            raise ValueError("save_format must be either 'pdf' of 'png'.")
     
     @staticmethod
     def _plot_dose_response_curve(
@@ -180,17 +178,13 @@ class CancerCellLineEncyclopedia(object):
         config: Optional[dict] = None,
         show_individual: bool = False,
         error: str = "std",
-        save_format: str = "pdf",
     ) -> None:
-        self._check_args(drug, save_format)
+        self._check_args(drug)
         if error not in ["std", "sem"]:
             raise ValueError("error must be either 'std' or 'sem'.")
 
         os.makedirs(
-            os.path.join(
-                "dose_response",
-                f"{self._drug2target(drug)}",
-            ),
+            os.path.join("dose_response", f"{self._drug2target(drug)}"),
             exist_ok=True
         )
 
@@ -202,26 +196,24 @@ class CancerCellLineEncyclopedia(object):
             elif level == "low":
                 bottom30.append(erbb_expression_ratio.index[i])
 
-        egfr_high = self._get_drug_response(
-            top30,
-            [drug] * len(top30),
-        )
-        egfr_low = self._get_drug_response(
-            bottom30,
-            [drug] * len(bottom30),
-        )
+        egfr_high = self._get_drug_response(top30, [drug] * len(top30))
+        egfr_low = self._get_drug_response(bottom30, [drug] * len(bottom30))
         
         if config is None:
             config = {}
-        config.setdefault('figure.figsize', (7, 5))
-        config.setdefault('font.size', 24)
-        config.setdefault('font.family', 'Arial')
-        config.setdefault('axes.linewidth', 2.4)
-        config.setdefault('xtick.major.width', 2.4)
-        config.setdefault('ytick.major.width', 2.4)
-        config.setdefault('lines.linewidth', 3)
+        config.setdefault("figure.figsize", (7, 5))
+        config.setdefault("font.size", 24)
+        config.setdefault("font.family", "Arial")
+        config.setdefault("axes.linewidth", 2.4)
+        config.setdefault("xtick.major.width", 2.4)
+        config.setdefault("ytick.major.width", 2.4)
+        config.setdefault("lines.linewidth", 3)
         config.setdefault("lines.markersize", 1)
+        config.setdefault("savefig.bbox", "tight")
+        config.setdefault("savefig.format", "pdf")
+
         plt.rcParams.update(config)
+
         plt.gca().spines["right"].set_visible(False)
         plt.gca().spines["top"].set_visible(False)
 
@@ -249,10 +241,8 @@ class CancerCellLineEncyclopedia(object):
             os.path.join(
                 "dose_response",
                 f"{self._drug2target(drug)}",
-                f"{self._convert_drug_name(drug)}.{save_format}",
+                f"{self._convert_drug_name(drug)}",
             ),
-            dpi=1200 if save_format == "png" else None,
-            bbox_inches="tight",
         )
         plt.close()
 
@@ -263,9 +253,8 @@ class CancerCellLineEncyclopedia(object):
         drug: str,
         *,
         config: Optional[dict] = None,
-        save_format: str = "pdf",
     ) -> None:
-        self._check_args(drug, save_format)
+        self._check_args(drug)
 
         os.makedirs(
             os.path.join(
@@ -283,33 +272,30 @@ class CancerCellLineEncyclopedia(object):
             elif level == "low":
                 bottom30.append(erbb_expression_ratio.index[i])
         
-        egfr_high = self._get_drug_response(
-            top30, 
-            [drug]*len(top30),
-        )
-        egfr_low = self._get_drug_response(
-            bottom30,
-            [drug]*len(bottom30),
-        )
-
+        egfr_high = self._get_drug_response(top30, [drug] * len(top30))
+        egfr_low = self._get_drug_response(bottom30, [drug] * len(bottom30))
+        
         activity_area = np.array(
             [
                 [egfr_high[i].act_area for i, _ in enumerate(egfr_high)],
                 [egfr_low[i].act_area for i, _ in enumerate(egfr_low)],
             ],
+            dtype=object,
         )
 
         if config is None:
             config = {}
-        config.setdefault('figure.figsize', (3, 5))
-        config.setdefault('font.family', 'Arial')
-        config.setdefault('mathtext.it', 'Arial:italic')
-        config.setdefault('font.size', 24)
-        config.setdefault('axes.linewidth', 2.4)
-        config.setdefault('xtick.major.width', 2.4)
-        config.setdefault('ytick.major.width', 2.4)
-        config.setdefault('lines.linewidth', 1.8)
-        config.setdefault('lines.markersize', 11)
+        config.setdefault("figure.figsize", (3, 5))
+        config.setdefault("font.family", "Arial")
+        config.setdefault("mathtext.it", "Arial:italic")
+        config.setdefault("font.size", 24)
+        config.setdefault("axes.linewidth", 2.4)
+        config.setdefault("xtick.major.width", 2.4)
+        config.setdefault("ytick.major.width", 2.4)
+        config.setdefault("lines.linewidth", 1.8)
+        config.setdefault("lines.markersize", 11)
+        config.setdefault("savefig.bbox", "tight")
+        config.setdefault("savefig.format", "pdf")
 
         plt.rcParams.update(config)
 
@@ -336,10 +322,8 @@ class CancerCellLineEncyclopedia(object):
             os.path.join(
                 "activity_area",
                 f"{self._drug2target(drug)}",
-                f"{self._convert_drug_name(drug)}.{save_format}",
+                f"{self._convert_drug_name(drug)}",
             ),
-            dpi=1200 if save_format == "png" else None,
-            bbox_inches="tight",
         )
         plt.close()
     
@@ -350,17 +334,14 @@ class CancerCellLineEncyclopedia(object):
         *,
         config_dose_response_curve: Optional[dict] = None,
         config_activity_area: Optional[dict] = None,
-        save_format: str = "pdf",
     ) -> None:
         self.save_dose_response_curve(
             erbb_expression_ratio,
             drug,
             config=config_dose_response_curve,
-            save_format=save_format,
         )
         self.save_activity_area(
             erbb_expression_ratio,
             drug,
             config=config_activity_area,
-            save_format=save_format,
         )
