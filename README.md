@@ -1,6 +1,8 @@
 # Breast cancer [![Actions Status](https://github.com/pasmopy/breast_cancer/workflows/Tests/badge.svg)](https://github.com/pasmopy/breast_cancer/actions)
 
-Workflow for classifying breast cancer subtypes based on intracellular signaling dynamics.
+This repository contains analysis code for the following paper:
+
+
 
 ## Requirements
 
@@ -171,11 +173,11 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
 
    breast_cancer_models = []
    path_to_models = os.path.join("models", "breast")
-   for f in os.listdir(path_to_models):
-        if os.path.isdir(os.path.join(path_to_models, f)) and (
-            f.startswith("TCGA_") or f.endswith("_BREAST")
+   for model in os.listdir(path_to_models):
+        if os.path.isdir(os.path.join(path_to_models, model)) and (
+            model.startswith("TCGA_") or model.endswith("_BREAST")
         ):
-            breast_cancer_models.append(f)
+            breast_cancer_models.append(model)
    # Set optimized parameters
    for model in breast_cancer_models:
        shutil.copytree(
