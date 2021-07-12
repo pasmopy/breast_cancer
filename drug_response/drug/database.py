@@ -115,14 +115,60 @@ class CancerCellLineEncyclopedia(object):
             )
         return drug_response_info
     
-    def _check_args(self, drug: str, save_format: str) -> Optional[NoReturn]:
+    def _check_args(self, drug: str) -> Optional[NoReturn]:
         if drug not in set(self.drug_response_data["Compound"]):
             raise ValueError(
                 f"{drug} doesn't exist in the CCLE drug response data.\n"
                 f"Should be one of {', '.join(list(set(self.drug_response_data['Compound'])))}"
             )
-        if save_format not in ["pdf", "png"]:
-            raise ValueError("save_format must be either 'pdf' of 'png'.")
+    
+    @staticmethod
+    def _plot_dose_response_curve(
+        x: List[float],
+        population: List[DrugResponse],
+        color: str,
+        label: str,
+        show_individual: bool,
+        error :str,
+    ):
+        if show_individual:
+            for i, _ in enumerate(population):
+                plt.plot(
+                    x,
+                    np.interp(x, population[i].doses, population[i].activity_data) + 100,
+                    "o",
+                    color=color,
+                )
+        y_mean = np.mean(
+            [
+                (np.interp(x, population[i].doses, population[i].activity_data) + 100)
+                for i, _ in enumerate(population)
+            ],
+            axis=0
+        )
+        y_err = np.std(
+            [
+                (np.interp(x, population[i].doses, population[i].activity_data) + 100)
+                for i, _ in enumerate(population)
+            ],
+            axis=0,
+            ddof=1
+        ) / (1 if error == "std" else np.sqrt(len(population)))
+        plt.plot(
+            x,
+            y_mean,
+            "-",
+            color=color,
+            label=label,
+        )
+        plt.fill_between(
+            x,
+            y_mean - y_err,
+            y_mean + y_err,
+            lw=0,
+            color=color,
+            alpha=0.1,
+        )
 
     def save_dose_response_curve(
         self,
@@ -132,17 +178,13 @@ class CancerCellLineEncyclopedia(object):
         config: Optional[dict] = None,
         show_individual: bool = False,
         error: str = "std",
-        save_format: str = "pdf",
     ) -> None:
-        self._check_args(drug, save_format)
+        self._check_args(drug)
         if error not in ["std", "sem"]:
             raise ValueError("error must be either 'std' or 'sem'.")
 
         os.makedirs(
-            os.path.join(
-                "dose_response",
-                f"{self._drug2target(drug)}",
-            ),
+            os.path.join("dose_response", f"{self._drug2target(drug)}"),
             exist_ok=True
         )
 
@@ -154,107 +196,36 @@ class CancerCellLineEncyclopedia(object):
             elif level == "low":
                 bottom30.append(erbb_expression_ratio.index[i])
 
-        egfr_high = self._get_drug_response(
-            top30,
-            [drug] * len(top30),
-        )
-        egfr_low = self._get_drug_response(
-            bottom30,
-            [drug] * len(bottom30),
-        )
+        egfr_high = self._get_drug_response(top30, [drug] * len(top30))
+        egfr_low = self._get_drug_response(bottom30, [drug] * len(bottom30))
         
         if config is None:
             config = {}
-        config.setdefault('figure.figsize', (7, 5))
-        config.setdefault('font.size', 24)
-        config.setdefault('font.family', 'Arial')
-        config.setdefault('axes.linewidth', 2.4)
-        config.setdefault('xtick.major.width', 2.4)
-        config.setdefault('ytick.major.width', 2.4)
-        config.setdefault('lines.linewidth', 3)
+        config.setdefault("figure.figsize", (7, 5))
+        config.setdefault("font.size", 24)
+        config.setdefault("font.family", "Arial")
+        config.setdefault("axes.linewidth", 2.4)
+        config.setdefault("xtick.major.width", 2.4)
+        config.setdefault("ytick.major.width", 2.4)
+        config.setdefault("lines.linewidth", 3)
         config.setdefault("lines.markersize", 1)
+        config.setdefault("savefig.bbox", "tight")
+        config.setdefault("savefig.format", "pdf")
+
         plt.rcParams.update(config)
+
         plt.gca().spines["right"].set_visible(False)
         plt.gca().spines["top"].set_visible(False)
 
         DOSE = [2.50e-03, 8.00e-03, 2.50e-02, 8.00e-02, 2.50e-01, 8.00e-01, 2.53e+00, 8.00e+00]
 
-        if show_individual:
-            for i, _ in enumerate(egfr_high):
-                plt.plot(
-                    DOSE,
-                    np.interp(DOSE, egfr_high[i].doses, egfr_high[i].activity_data) + 100,
-                    "o",
-                    color="darkmagenta",
-                )
-        y_mean = np.mean(
-            [
-                (np.interp(DOSE, egfr_high[i].doses, egfr_high[i].activity_data) + 100)
-                for i, _ in enumerate(egfr_high)
-            ],
-            axis=0
+        self._plot_dose_response_curve(
+            DOSE, egfr_high, color="darkmagenta", label="EGFR high",
+            show_individual=show_individual, error=error
         )
-        y_err = np.std(
-            [
-                (np.interp(DOSE, egfr_high[i].doses, egfr_high[i].activity_data) + 100)
-                for i, _ in enumerate(egfr_high)
-            ],
-            axis=0,
-            ddof=1
-        ) / (1 if error == "std" else np.sqrt(len(egfr_high)))
-        plt.plot(
-            DOSE,
-            y_mean,
-            "-",
-            color="darkmagenta",
-            label="EGFR high",
-        )
-        plt.fill_between(
-            DOSE,
-            y_mean - y_err,
-            y_mean + y_err,
-            lw=0,
-            color="darkmagenta",
-            alpha=0.1,
-        )
-
-        if show_individual:
-            for i, _ in enumerate(egfr_low):
-                plt.plot(
-                    DOSE,
-                    np.interp(DOSE, egfr_low[i].doses, egfr_low[i].activity_data) + 100,
-                    "o",
-                    color="goldenrod",
-                )
-        y_mean = np.mean(
-            [
-                (np.interp(DOSE, egfr_low[i].doses, egfr_low[i].activity_data) + 100)
-                for i, _ in enumerate(egfr_low)
-            ],
-            axis=0
-        )
-        y_err = np.std(
-            [
-                (np.interp(DOSE, egfr_low[i].doses, egfr_low[i].activity_data) + 100)
-                for i, _ in enumerate(egfr_low)
-            ],
-            axis=0,
-            ddof=1
-        ) / (1 if error == "std" else np.sqrt(len(egfr_high)))
-        plt.plot(
-            DOSE,
-            y_mean,
-            "-",
-            color="goldenrod",
-            label="EGFR low",
-        )
-        plt.fill_between(
-            DOSE,
-            y_mean - y_err,
-            y_mean + y_err,
-            lw=0,
-            color="goldenrod",
-            alpha=0.1,
+        self._plot_dose_response_curve(
+            DOSE, egfr_low, color="goldenrod", label="EGFR low",
+            show_individual=show_individual, error=error 
         )
 
         plt.xscale("log")
@@ -270,10 +241,8 @@ class CancerCellLineEncyclopedia(object):
             os.path.join(
                 "dose_response",
                 f"{self._drug2target(drug)}",
-                f"{self._convert_drug_name(drug)}.{save_format}",
+                f"{self._convert_drug_name(drug)}",
             ),
-            dpi=1200 if save_format == "png" else None,
-            bbox_inches="tight",
         )
         plt.close()
 
@@ -284,9 +253,8 @@ class CancerCellLineEncyclopedia(object):
         drug: str,
         *,
         config: Optional[dict] = None,
-        save_format: str = "pdf",
     ) -> None:
-        self._check_args(drug, save_format)
+        self._check_args(drug)
 
         os.makedirs(
             os.path.join(
@@ -304,33 +272,30 @@ class CancerCellLineEncyclopedia(object):
             elif level == "low":
                 bottom30.append(erbb_expression_ratio.index[i])
         
-        egfr_high = self._get_drug_response(
-            top30, 
-            [drug]*len(top30),
-        )
-        egfr_low = self._get_drug_response(
-            bottom30,
-            [drug]*len(bottom30),
-        )
-
+        egfr_high = self._get_drug_response(top30, [drug] * len(top30))
+        egfr_low = self._get_drug_response(bottom30, [drug] * len(bottom30))
+        
         activity_area = np.array(
             [
                 [egfr_high[i].act_area for i, _ in enumerate(egfr_high)],
                 [egfr_low[i].act_area for i, _ in enumerate(egfr_low)],
             ],
+            dtype=object,
         )
 
         if config is None:
             config = {}
-        config.setdefault('figure.figsize', (3, 5))
-        config.setdefault('font.family', 'Arial')
-        config.setdefault('mathtext.it', 'Arial:italic')
-        config.setdefault('font.size', 24)
-        config.setdefault('axes.linewidth', 2.4)
-        config.setdefault('xtick.major.width', 2.4)
-        config.setdefault('ytick.major.width', 2.4)
-        config.setdefault('lines.linewidth', 1.8)
-        config.setdefault('lines.markersize', 11)
+        config.setdefault("figure.figsize", (3, 5))
+        config.setdefault("font.family", "Arial")
+        config.setdefault("mathtext.it", "Arial:italic")
+        config.setdefault("font.size", 24)
+        config.setdefault("axes.linewidth", 2.4)
+        config.setdefault("xtick.major.width", 2.4)
+        config.setdefault("ytick.major.width", 2.4)
+        config.setdefault("lines.linewidth", 1.8)
+        config.setdefault("lines.markersize", 11)
+        config.setdefault("savefig.bbox", "tight")
+        config.setdefault("savefig.format", "pdf")
 
         plt.rcParams.update(config)
 
@@ -357,10 +322,8 @@ class CancerCellLineEncyclopedia(object):
             os.path.join(
                 "activity_area",
                 f"{self._drug2target(drug)}",
-                f"{self._convert_drug_name(drug)}.{save_format}",
+                f"{self._convert_drug_name(drug)}",
             ),
-            dpi=1200 if save_format == "png" else None,
-            bbox_inches="tight",
         )
         plt.close()
     
@@ -371,17 +334,14 @@ class CancerCellLineEncyclopedia(object):
         *,
         config_dose_response_curve: Optional[dict] = None,
         config_activity_area: Optional[dict] = None,
-        save_format: str = "pdf",
     ) -> None:
         self.save_dose_response_curve(
             erbb_expression_ratio,
             drug,
             config=config_dose_response_curve,
-            save_format=save_format,
         )
         self.save_activity_area(
             erbb_expression_ratio,
             drug,
             config=config_activity_area,
-            save_format=save_format,
         )

@@ -1,13 +1,15 @@
 # Breast cancer [![Actions Status](https://github.com/pasmopy/breast_cancer/workflows/Tests/badge.svg)](https://github.com/pasmopy/breast_cancer/actions)
 
-Workflow for classifying breast cancer subtypes based on intracellular signaling dynamics.
+This repository contains analysis code for the following paper:
+
+
 
 ## Requirements
 
 | Language      | Dependent packages                                             |
 | ------------- | -------------------------------------------------------------- |
 | Python >= 3.7 | See [`requirements.txt`](requirements.txt)                     |
-| Julia >= 1.5  | [BioMASS.jl](https://github.com/biomass-dev/BioMASS.jl)        |
+| Julia >= 1.5  | [`BioMASS.jl==0.5.0`](https://github.com/biomass-dev/BioMASS.jl)        |
 | R >= 4.0      | TCGAbiolinks, sva, biomaRt, edgeR, ComplexHeatmap, viridisLite |
 
 ## Table of contents
@@ -171,11 +173,11 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
 
    breast_cancer_models = []
    path_to_models = os.path.join("models", "breast")
-   for f in os.listdir(path_to_models):
-        if os.path.isdir(os.path.join(path_to_models, f)) and (
-            f.startswith("TCGA_") or f.endswith("_BREAST")
+   for model in os.listdir(path_to_models):
+        if os.path.isdir(os.path.join(path_to_models, model)) and (
+            model.startswith("TCGA_") or model.endswith("_BREAST")
         ):
-            breast_cancer_models.append(f)
+            breast_cancer_models.append(model)
    # Set optimized parameters
    for model in breast_cancer_models:
        shutil.copytree(
@@ -241,11 +243,14 @@ Workflow for classifying breast cancer subtypes based on intracellular signaling
 - Calculate sensitivity coefficients by varying the amount of each nonzero species
 
   ```python
+  import os
+
   from pasmopy import PatientModelAnalyses
 
   import models.breast
+  
 
-  with open ("selected_tnbc.txt" mode="r") as f:
+  with open (os.path.join("models", "breast", "selected_tnbc.txt"), mode="r") as f:
       TNBC_ID = f.read().splitlines()
   analyses = PatientModelAnalyses(
       models.breast.__package__,
