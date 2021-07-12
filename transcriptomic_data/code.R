@@ -10,7 +10,7 @@ library(biomaRt)
 library(cluster)
 
 
-setwd("G:/breastcancer_project/TCGA/Pasmopy_Rcode/Rcode")
+
 
 # Download TCGA clinical/subtype information ------------------------------
 #outputclinical()
@@ -36,13 +36,8 @@ sampleselection <- function(type,ID,...){
     condition <- condition & eval(obj, type)
   }
   selected_samples <<- type[condition, ID][!is.na(type[condition, ID])]
+  message(paste("sampleselection(): Number of selected samples is ", length(selected_samples)))
 }
-
-
-sampleselection(type = subtype, 
-                ID = "patient",
-                pathologic_stage %in% c("Stage_I", "Stage_II"),
-                age_at_initial_pathologic_diagnosis < 60)
 
 
 
@@ -65,7 +60,7 @@ downloadTCGA <- function(cancertype, sampletype){
   TCGA_counts_filtered <<- data.frame(Name = TCGA_counts$X1,
                                       TCGA_counts[,grep(paste(selected_samples, collapse = "|"),
                                                         colnames(TCGA_counts))])
-  message(paste("downloadTCGA: Number of selected samples is ", ncol(TCGA_counts_filtered)-1))
+  message(paste("downloadTCGA(): Number of selected samples is ", ncol(TCGA_counts_filtered)-1))
 }
 
 
@@ -79,10 +74,10 @@ downloadCCLE <- function(cancertype){
   CCLE_cancer <<- data.frame(Name = str_sub(CCLE_counts$Name, start = 1, end = 15),
                              Description = CCLE_counts$Description,
                              CCLE_counts[,grep(cancertype, colnames(CCLE_counts))])
-  message(paste("downloadCCLE: Number of selected samples is ", ncol(CCLE_cancer)-2))
+  message(paste("downloadCCLE(): Number of selected samples is ", ncol(CCLE_cancer)-2))
 }
 
-downloadCCLE("BREAST")
+
 
 
 # Combine TCGA and CCLE data ----------------------------------------------
