@@ -10,23 +10,31 @@ Workflow for creating trascriptomic data
 
 
 
+## Move to /transcriptomic_data and run R
+- Move to /transcriptomic_data and run R
 
-## Download package for run following R script
-- Run code.R
+  ```bash
+  $cd transcriptomic_data
+  $R
+  ```  
+
+- Run transcriptomic_data.R
 
   ```R
-  source("code.R")
+  source("transcriptomic_data.R")
   ```
 
 ## Download TCGA clinical/subtype information
 
 - Run `outputclinical()` or `outputsubtype()`  
-**outputclinical()** :  You can select all cancer types in [TCGA Study Abbreviations](https://gdc.cancer.gov/resources-tcga-users/tcga-code-tables/tcga-study-abbreviations).  
-**outputsubtype()** :  You can select "LGG", "LUAD", "STAD", "BRCA", COAD", "READ"  
+**outputClinical()** :  You can select all cancer types in [TCGA Study Abbreviations](https://gdc.cancer.gov/resources-tcga-users/tcga-code-tables/tcga-study-abbreviations).  
+**outputSubtype()** :  You can select "ACC", "BRCA", "BLCA", "CESC", "CHOL", "COAD", "ESCA", "GBM", "HNSC", "KICH", "KIRC", "KIRP", "LGG", "LIHC", "LUAD", "LUSC", "PAAD", "PCPG", "PRAD", "READ", "SKCM", "SARC", "STAD", THCA", "UCEC", "UCS", "UVM".
+
+
 
   ```R
-  outputclinical("BRCA")
-  outputsubtype("BRCA")
+  outputClinical("BRCA")
+  outputSubtype("BRCA")
   ```
 
   Output: `"TCGA Study Abbreviation"_clinic.csv` or `"TCGA Study Abbreviation"_subtype.csv`
@@ -34,13 +42,13 @@ Workflow for creating trascriptomic data
 
 ## Select samples in reference to clinical or subtype data
 
-- You can select the patient's state based on the clinical or subtype data obrained above.   
+- You can select the patient's state based on the clinical or subtype data obtained above.   
 
   ```R
-  sampleselection(type = subtype, 
-                  ID = "patient",
-                  pathologic_stage %in% c("Stage_I", "Stage_II"),
-                  age_at_initial_pathologic_diagnosis < 60)
+  patientSelection(type = subtype, 
+                   ID = "patient",
+                   pathologic_stage %in% c("Stage_I", "Stage_II"),
+                   age_at_initial_pathologic_diagnosis < 60)
   ```
 
     **type** :   
@@ -68,7 +76,8 @@ Workflow for creating trascriptomic data
 
    ```R
    downloadTCGA(cancertype = "BRCA", 
-                sampletype = c("01", "06"))
+                sampletype = c("01", "06"),
+                outputresult = FALSE)
    ```  
    Output: Number of selected samples
 
@@ -79,7 +88,8 @@ Workflow for creating trascriptomic data
 - Download CCLE transcriptomic data. You can select cell lines derived from [`one specific cancer type`](CCLE_cancertype.txt).
 
   ```R
-  downloadCCLE(cancertype = "BREAST")
+  downloadCCLE(cancertype = "BREAST",
+               outputresult = FALSE)
   ```  
   Output: Number of selected samples
  
@@ -90,7 +100,7 @@ Workflow for creating trascriptomic data
  3. Output total read counts of all samples in order to decide the cutoff value of total read counts for `Normalization()`
 
     ```R
-     MergeTCGAandCCLE()
+     mergeTCGAandCCLE(outputesult = FALSE)
      ```  
 
     Output : totalreadcounts.csv 
@@ -101,7 +111,7 @@ Workflow for creating trascriptomic data
  - If you do not want to specify values for truncation, please set "min = F" or "max = F"
 
    ```R
-   Normalization(min = 40000000, max = 140000000)
+   normalization(min = 40000000, max = 140000000)
    ```  
    Output : TPM_RLE_postComBat.csv
 
