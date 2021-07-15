@@ -3,8 +3,9 @@ import random
 import shutil
 import sys
 import time
-from typing import List
+from typing import Callable, List
 
+import numpy as np
 from pasmopy import PatientModelSimulations
 
 try:
@@ -57,13 +58,19 @@ def test_patient_model_simulations():
     assert simulations.run() is None
     elapsed = time.time() - start
     print(f"Computation time for simulating 10 patients: {elapsed/60:.1f} [min]")
+    # Add new response characteristics
+    _droprate: Callable[[np.ndarray], float] = lambda time_course: -(
+        time_course[-1] - np.max(time_course)
+    ) / (len(time_course) - np.argmax(time_course))
+    simulations.response_characteristics["droprate"] = _droprate
+    simulations.response_characteristics["argmax"] = np.argmax
     # Extract response characteristics and visualize patient classification
     simulations.subtyping(
         "subtype_classification.pdf",
         {
-            "Phosphorylated_Akt": {"EGF": ["max"], "HRG": ["max"]},
-            "Phosphorylated_ERK": {"EGF": ["max"], "HRG": ["max"]},
-            "Phosphorylated_c-Myc": {"EGF": ["max"], "HRG": ["max"]},
+            "Phosphorylated_Akt": {"EGF": ["max"], "HRG": ["AUC"]},
+            "Phosphorylated_ERK": {"EGF": ["droprate"], "HRG": ["droprate"]},
+            "Phosphorylated_c-Myc": {"EGF": ["argmax"], "HRG": ["argmax"]},
         },
     )
     observables = ["Phosphorylated_Akt", "Phosphorylated_ERK", "Phosphorylated_c-Myc"]
