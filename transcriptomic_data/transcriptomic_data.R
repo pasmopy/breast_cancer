@@ -151,7 +151,7 @@ normalization <- function(min, max){
   counts_tpm_symbol <<- inner_join(ensembl_symbol,
                                   counts_tpm,
                                   by = "ensembl_gene_id")
-  fwrite(counts_tpm_symbol, paste("TPM_RLE_postComBat", cancertype_TCGA, "_", cancertype_CCLE,".csv"))
+  fwrite(counts_tpm_symbol, paste("TPM_RLE_postComBat_", cancertype_TCGA, "_", cancertype_CCLE,".csv"))
   message("********************************************************\n",
           paste("  normalization(): Number of TCGA samples is ", length(grep("TCGA", colnames(counts_tpm_symbol))),"\n"),
           paste("  normalization(): Number of CCLE samples is ", ncol(counts_tpm_symbol)-length(grep("TCGA", colnames(counts_tpm_symbol))),"\n"),
