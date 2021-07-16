@@ -51,11 +51,20 @@ R:
 
 ### Download TCGA clinical/subtype information
 
+- Move to /transcriptomic_data and run `R`
+
+  ```bash
+  $ cd transcriptomic_data
+  $ R
+  ```  
+
+- Read `transcriptomic_data.R`
+
+  ```R
+  source("transcriptomic_data.R")
+  ```
+
 - Run `outputClinical()` or `outputSubtype()`  
-**outputClinical()** :  You can select all cancer types in [TCGA Study Abbreviations](https://gdc.cancer.gov/resources-tcga-users/tcga-code-tables/tcga-study-abbreviations).  
-**outputSubtype()** :  You can select "ACC", "BRCA", "BLCA", "CESC", "CHOL", "COAD", "ESCA", "GBM", "HNSC", "KICH", "KIRC", "KIRP", "LGG", "LIHC", "LUAD", "LUSC", "PAAD", "PCPG", "PRAD", "READ", "SKCM", "SARC", "STAD", THCA", "UCEC", "UCS", "UVM".
-
-
 
   ```R
   outputClinical("BRCA")
@@ -155,7 +164,7 @@ R:
    incorporating_gene_expression_levels = Individualization(
        parameters=C.NAMES,
        species=V.NAMES,
-       transcriptomic_data=os.path.join("transcriptomic_data", "TPM_RLE_postComBat.csv"),
+       transcriptomic_data=os.path.join("transcriptomic_data", "TPM_RLE_postComBat_BRCA_BREAST.csv"),
        gene_expression={
            "ErbB1": ["EGFR"],
            "ErbB2": ["ERBB2"],

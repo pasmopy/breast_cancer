@@ -10,14 +10,14 @@ from .set_model import initial_values, param_values
 
 ext = (
     "tar.xz"
-    if not os.path.isfile(os.path.join("transcriptomic_data", "TPM_RLE_postComBat.csv"))
+    if not os.path.isfile(os.path.join("transcriptomic_data", "TPM_RLE_postComBat_BRCA_BREAST.csv"))
     else "csv"
 )
 
 incorporating_gene_expression_levels = Individualization(
     parameters=C.NAMES,
     species=V.NAMES,
-    transcriptomic_data=os.path.join("transcriptomic_data", f"TPM_RLE_postComBat.{ext}"),
+    transcriptomic_data=os.path.join("transcriptomic_data", f"TPM_RLE_postComBat_BRCA_BREAST.{ext}"),
     gene_expression={
         "ErbB1": ["EGFR"],
         "ErbB2": ["ERBB2"],
