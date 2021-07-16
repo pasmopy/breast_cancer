@@ -36,7 +36,7 @@ function norm01(;egf1::Vector{Int}, hrg1::Vector{Int}, egf2::Vector{Int},
     for i in eachindex(t)
         egf_ave[i] = mean([data1[i,1], data2[i,1], data3[i,1]])
         hrg_ave[i] = mean([data1[i,2], data2[i,2], data3[i,2]])
-        egf_sem[i] = std([data1[i,2], data2[i,2], data3[i,2]]) ./ sqrt(3)
+        egf_sem[i] = std([data1[i,1], data2[i,1], data3[i,1]]) ./ sqrt(3)
         hrg_sem[i] = std([data1[i,2], data2[i,2], data3[i,2]]) ./ sqrt(3)
     end
 
