@@ -105,7 +105,7 @@ class Visualization(Observable):
             self.timecourse_options[i]["xticks"] = [0, 30, 60, 90, 120]
             self.timecourse_options[i]["xlabel"] = "Time (min)"
             # self.timecourse_options[i]['ylim'] = (-0.1, 1.3)
-            # self.timecourse_options[i]['yticks'] = [0.0, 0.3, 0.6, 0.9, 1.2]
+            self.timecourse_options[i]['yticks'] = [0.0, 0.5, 1.0]
             # self.timecourse_options[i]['cmap'] = ['mediumblue', 'red']
             # self.timecourse_options[i]['shape'] = ['D', 's']
             # self.timecourse_options[i]['dont_show'] = []
