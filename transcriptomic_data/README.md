@@ -14,11 +14,11 @@ Workflow for creating trascriptomic data
 - Move to /transcriptomic_data and run R
 
   ```bash
-  $cd transcriptomic_data
-  $R
+  $ cd transcriptomic_data
+  $ R
   ```  
 
-- Run transcriptomic_data.R
+- Run `transcriptomic_data.R`
 
   ```R
   source("transcriptomic_data.R")
@@ -72,7 +72,7 @@ Workflow for creating trascriptomic data
 
 ## Download TCGA gene expression data (HTSeq-Counts)
 
- - Download the gene expression data of the specified sample types [(Sample Type Codes)](https://gdc.cancer.gov/resources-tcga-users/tcga-code-tables/sample-type-codes) in the cancer type specified by `outputclinical()` or `outputsubtype()`. By running this code, you can get data of only the patients selected by `sampleselection()`.
+ - Download the gene expression data of the specified sample types [(Sample Type Codes)](https://gdc.cancer.gov/resources-tcga-users/tcga-code-tables/sample-type-codes) in the cancer type specified by `outputClinical()` or `outputSubtype()`. By running this code, you can get data of only the patients selected by `sampleSelection()`.
 
    ```R
    downloadTCGA(cancertype = "BRCA", 
@@ -100,20 +100,20 @@ Workflow for creating trascriptomic data
  3. Output total read counts of all samples in order to decide the cutoff value of total read counts for `normalization()`
 
     ```R
-     mergeTCGAandCCLE(outputesult = FALSE)
-     ```  
+    mergeTCGAandCCLE(outputesult = FALSE)
+    ```  
 
-    Output : totalreadcounts.csv 
+    Output : `totalreadcounts.csv `
 
 ## Normalization of RNA-seq counts data
  - Conduct noramlization of RNA-seq .
  - You can specify min and max value for truncation of total read counts.
- - If you do not want to specify values for truncation, please set "min = F" or "max = F"
+ - If you do not want to specify values for truncation, please set `min = F` or `max = F`
 
    ```R
    normalization(min = 40000000, max = 140000000)
    ```  
-   Output : TPM_RLE_postComBat.csv
+   Output : `TPM_RLE_postComBat_{TCGA}_{CCLE}.csv`
 
 
 
