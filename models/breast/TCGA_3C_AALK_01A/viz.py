@@ -31,9 +31,8 @@ class Visualization(Observable):
                 Set the label for the y-axis.
             * 'exp_data' : bool (default: True)
                 if False, experimental data will not be shown.
-            * 'legend_loc' : Location String (default: None)
-                Set the location of the legend. If 'legend_loc' is None,
-                pyplot.legend will not be shown.
+            * 'legend_kws' : dict, optional
+                Keyword arguments to pass to matplotlib.pyplot.legend().
             * 'cmap' : list or tuple
                 Set colormap.
             * 'shape' : list or tuple of strings (default: Line2D.filled_markers)
@@ -62,7 +61,7 @@ class Visualization(Observable):
                 "yticks": None,
                 "ylabel": self.obs_names[i].replace("__", "\n").replace("_", " "),
                 "exp_data": True,
-                "legend_loc": None,
+                "legend_kws": None,
                 "cmap": [self.cm.colors[j] for j in range(10)],
                 "shape": Line2D.filled_markers,
                 "dont_show": [],
@@ -81,6 +80,14 @@ class Visualization(Observable):
             "ylim": (),
             "yticks": None,
             "ylabel": "",
+            "legend_kws": dict(
+                bbox_to_anchor=(1.05, 1),
+                loc="upper left",
+                borderaxespad=0,
+                labelspacing=1.25,
+                frameon=False,
+                fontsize=12,
+            ),
             "cmap": [self.cm.colors[j] for j in range(10)],
             "shape": Line2D.filled_markers,
         }
@@ -88,7 +95,7 @@ class Visualization(Observable):
         self.sensitivity_options = {
             "figsize": (12, 5),
             "width": 0.3,
-            "legend_loc": "upper left",
+            "legend_kws": dict(loc="upper left", frameon=False),
             "cmap": [self.cm.colors[j] for j in range(10)],
         }
 
@@ -105,21 +112,7 @@ class Visualization(Observable):
         return self.timecourse_options
 
     def multiplot_observables(self):
-        """
-        self.multiplot_options['observables'] = [
-            'Phosphorylated_ERKc',
-            'Phosphorylated_CREBw',
-            'Phosphorylated_cFos',
-            'dusp_mRNA'
-        ]
-        self.multiplot_options['condition'] = 'EGF'
-        self.multiplot_options['xlim'] = (-5, 95)
-        self.multiplot_options['xticks'] = [0, 30, 60, 90]
-        self.multiplot_options['xlabel'] = 'Time (min)'
-        self.multiplot_options['ylim'] = (-0.1, 1.3)
-        self.multiplot_options['yticks'] = [0.0, 0.3, 0.6, 0.9, 1.2]
-        self.multiplot_options['ylabel'] = 'Intensity (a.u.)'
-        """
+
         return self.multiplot_options
 
     @staticmethod
@@ -131,18 +124,11 @@ class Visualization(Observable):
         plt.rcParams["ytick.major.width"] = 1.5
         plt.rcParams["lines.linewidth"] = 1.8
         plt.rcParams["lines.markersize"] = 12
+        plt.rcParams["savefig.bbox"] = "tight"
+        plt.rcParams["savefig.format"] = "pdf"
         # plt.rcParams['font.family'] = 'Arial'
         # plt.rcParams['mathtext.fontset'] = 'custom'
         # plt.rcParams['mathtext.it'] = 'Arial:italic'
-
-    @staticmethod
-    def set_param_range_rcParams():
-        """figure/param_range"""
-        plt.rcParams["font.size"] = 12
-        plt.rcParams["axes.linewidth"] = 1.2
-        plt.rcParams["xtick.major.width"] = 1.2
-        plt.rcParams["ytick.major.width"] = 1.2
-        # plt.rcParams['font.family'] = 'Arial'
 
     @staticmethod
     def set_sensitivity_rcParams():
@@ -151,6 +137,8 @@ class Visualization(Observable):
         plt.rcParams["axes.linewidth"] = 1.2
         plt.rcParams["xtick.major.width"] = 1.2
         plt.rcParams["ytick.major.width"] = 1.2
+        plt.rcParams["savefig.bbox"] = "tight"
+        plt.rcParams["savefig.format"] = "pdf"
         # plt.rcParams['font.family'] = 'Arial'
 
     @staticmethod
@@ -158,14 +146,6 @@ class Visualization(Observable):
         """figure/sensitivity/initial_condition
         - Sensitivity for species with nonzero initial conditions
         """
-        """
-        if name == 'ERKc':
-            return 'ERK (cytoplasm)'
-        elif name == 'RSKc':
-            return 'RSK (cytoplasm)'
-        elif name == 'CREBn':
-            return 'CREB (nucleus)'
-        elif name == 'Elk1n':
-            return 'Elk1 (nucleus)'
-        """
+        if name == "GSK3b":
+            return "GSK3β"
         return name

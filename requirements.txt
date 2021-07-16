@@ -1,4 +1,4 @@
-biomass==0.5.0
+biomass>=0.5.1
 matplotlib
 numpy
 pandas>=0.23
