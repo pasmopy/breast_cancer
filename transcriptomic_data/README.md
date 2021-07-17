@@ -1,14 +1,14 @@
-# Create transcriptomic data
+## Transcriptomic data integration
 
-Workflow for creating trascriptomic data
+Integrating TCGA and CCLE data for parameterization and individualization of the mechanistic model.
 
-## Requirements
+### Requirements
 
 | Language      | Dependent packages                                             |
 | ------------- | -------------------------------------------------------------- |
 | R | dplyr, edgeR, sva, tibble, data.table, stringr, TCGAbiolinks ,  biomaRt |
 
-## Download TCGA clinical/subtype information
+### Download TCGA clinical/subtype information
 
 - Read `transcriptomic_data.R`
   ```bash
@@ -34,7 +34,7 @@ Workflow for creating trascriptomic data
   Output: `"TCGA Study Abbreviation"_clinic.csv` or `"TCGA Study Abbreviation"_subtype.csv`
 
 
-## Select samples in reference to clinical or subtype data
+### Select samples in reference to clinical or subtype data
 
 - You can select the patient's state based on the clinical or subtype data obtained above.   
 
@@ -64,7 +64,7 @@ Workflow for creating trascriptomic data
 
 
 
-## Download TCGA gene expression data (HTSeq-Counts)
+### Download TCGA gene expression data (HTSeq-Counts)
 
  - Download the gene expression data of the specified sample types [(Sample Type Codes)](https://gdc.cancer.gov/resources-tcga-users/tcga-code-tables/sample-type-codes) in the cancer type specified by `outputClinical()` or `outputSubtype()`. By running this code, you can get data of only the patients selected by `sampleSelection()`.
 
@@ -76,7 +76,7 @@ Workflow for creating trascriptomic data
    Output: Number of selected samples
 
 
-## Download CCLE transcriptomic data
+### Download CCLE transcriptomic data
 
 
 - Download CCLE transcriptomic data. You can select cell lines derived from [`one specific cancer type`](CCLE_cancertype.txt).
@@ -88,7 +88,7 @@ Workflow for creating trascriptomic data
   Output: Number of selected samples
  
 
-## Merge TCGA and CCLE data
+### Merge TCGA and CCLE data
  1. Merge TCGA data download with `downloadTCGA()` and CCLE data download with `downloadCCLE()`.
  1. Run ComBat-seq program to remove batch effects between TCGA and CCLE datasets.
  1. Output total read counts of all samples in order to decide the cutoff value of total read counts for `normalization()`.
@@ -99,7 +99,7 @@ Workflow for creating trascriptomic data
 
     Output : `totalreadcounts.csv `
 
-## Normalization of RNA-seq counts data
+### Normalization of RNA-seq counts data
 
 - Conduct noramlization of RNA-seq.
 - You can specify min and max value for truncation of total read counts.
