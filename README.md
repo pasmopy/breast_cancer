@@ -51,7 +51,7 @@ R:
 
 ### Download TCGA clinical/subtype information
 
-- Move to /transcriptomic_data and run `R`
+- Move to `transcriptomic_data/` and start `R`
 
   ```bash
   $ cd transcriptomic_data
@@ -110,25 +110,26 @@ R:
  
 
 ### Merge TCGA and CCLE data
- 1. Merge TCGA data download with `downloadTCGA()` and CCLE data download with `downloadCCLE()`
- 2. Run ComBat-seq program to remove batch effects between TCGA and CCLE datasets  
- 3. Output total read counts of all samples in order to decide the cutoff value of total read counts for `normalization()`
+ 1. Merge TCGA data download with `downloadTCGA()` and CCLE data download with `downloadCCLE()`.
+ 1. Run ComBat-seq program to remove batch effects between TCGA and CCLE datasets.
+ 1. Output total read counts of all samples in order to decide the cutoff value of total read counts for `normalization()`.
 
     ```R
     mergeTCGAandCCLE(outputesult = FALSE)
     ```  
 
-    Output : `totalreadcounts.csv `
+    Output : `totalreadcounts.csv`
 
 ### Normalization of RNA-seq counts data
- - Conduct noramlization of RNA-seq .
- - You can specify min and max value for truncation of total read counts.
- - If you do not want to specify values for truncation, please set `min = F` or `max = F`
 
-   ```R
-   normalization(min = 40000000, max = 140000000)
-   ```  
-   Output : `TPM_RLE_postComBat_{TCGA}_{CCLE}.csv`
+- Conduct noramlization of RNA-seq.
+- You can specify min and max value for truncation of total read counts.
+- If you do not want to specify values for truncation, please set `min = F` or `max = F`.
+
+    ```R
+    normalization(min = 40000000, max = 140000000)
+    ```  
+    Output : `TPM_RLE_postComBat_{TCGA}_{CCLE}.csv`
 
 ## Construction of a comprehensive model of the ErbB signaling network
 
