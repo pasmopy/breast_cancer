@@ -79,6 +79,26 @@ def test_patient_model_simulations():
     assert os.path.isfile("subtype_classification.pdf")
 
 
+def test_four_breast_cancer_cell_line_models():
+    cell_lines: List[str] = []
+    for model in os.listdir(os.path.join("models", "breast")):
+        if model.endswith("_BREAST"):
+            cell_lines.append(model)
+    simulations = PatientModelSimulations(models.breast.__package__, cell_lines)
+    assert simulations.run() is None
+    for model in cell_lines:
+        simulated_values = np.load(
+            os.path.join(
+                "models",
+                "breast",
+                model,
+                "simulation_data",
+                "simulations_all.npy",
+            )
+        )
+        assert np.isfinite(simulated_values).all()
+
+
 def test_cleanup_models():
     # patients
     for patient in TCGA_ID:
