@@ -8,29 +8,23 @@ Workflow for creating trascriptomic data
 | ------------- | -------------------------------------------------------------- |
 | R | dplyr, edgeR, sva, tibble, data.table, stringr, TCGAbiolinks ,  biomaRt |
 
+## Download TCGA clinical/subtype information
 
-
-## Move to /transcriptomic_data and run R
-- Move to /transcriptomic_data and run R
-
+- Read `transcriptomic_data.R`
   ```bash
-  $ cd transcriptomic_data
   $ R
   ```  
-
-- Run `transcriptomic_data.R`
 
   ```R
   source("transcriptomic_data.R")
   ```
 
-## Download TCGA clinical/subtype information
+- Run `outputclinical()` or `outputsubtype()`
 
-- Run `outputclinical()` or `outputsubtype()`  
-**outputClinical()** :  You can select all cancer types in [TCGA Study Abbreviations](https://gdc.cancer.gov/resources-tcga-users/tcga-code-tables/tcga-study-abbreviations).  
-**outputSubtype()** :  You can select "ACC", "BRCA", "BLCA", "CESC", "CHOL", "COAD", "ESCA", "GBM", "HNSC", "KICH", "KIRC", "KIRP", "LGG", "LIHC", "LUAD", "LUSC", "PAAD", "PCPG", "PRAD", "READ", "SKCM", "SARC", "STAD", THCA", "UCEC", "UCS", "UVM".
-
-
+  | Function | Description |
+  | ---      | ---         |
+  | `outputClinical()` | You can select all cancer types in [TCGA Study Abbreviations](https://gdc.cancer.gov/resources-tcga-users/tcga-code-tables/tcga-study-abbreviations). |
+  | `outputSubtype()` |  You can select "ACC", "BRCA", "BLCA", "CESC", "CHOL", "COAD", "ESCA", "GBM", "HNSC", "KICH", "KIRC", "KIRP", "LGG", "LIHC", "LUAD", "LUSC", "PAAD", "PCPG", "PRAD", "READ", "SKCM", "SARC", "STAD", THCA", "UCEC", "UCS", "UVM".
 
   ```R
   outputClinical("BRCA")
@@ -60,12 +54,12 @@ Workflow for creating trascriptomic data
     **After line 3** :  
     You can set multiple conditions for selecting samples. 
 
-    | Terms      | How to write                                             |
-    | ------------- | -------------------------------------------------------------- |
-    | all patients meet "A" in column x | x == "A" |
-    | all patients meet "A" or "B" or "C" in column x | x %in% c("A", "B", "C") |
-    | all patients have a value greater than A in column x | x > A  |
-    | all patients have a value less than A in column x | x < A  |
+    | Expression | Meaning |
+    | ---------- | ------- |
+    | x == "A" | All patients meeting "A" in column x |
+    | x %in% c("A", "B", "C") | All patients meeting "A" or "B" or "C" in column x |
+    | x > A | All patients having a value greater than A in column x |
+    | x < A | All patients having a value less than A in column x |
 
 
 
@@ -95,9 +89,9 @@ Workflow for creating trascriptomic data
  
 
 ## Merge TCGA and CCLE data
- 1. Merge TCGA data download with `downloadTCGA()` and CCLE data download with `downloadCCLE()`
- 2. Run ComBat-seq program to remove batch effects between TCGA and CCLE datasets  
- 3. Output total read counts of all samples in order to decide the cutoff value of total read counts for `normalization()`
+ 1. Merge TCGA data download with `downloadTCGA()` and CCLE data download with `downloadCCLE()`.
+ 1. Run ComBat-seq program to remove batch effects between TCGA and CCLE datasets.
+ 1. Output total read counts of all samples in order to decide the cutoff value of total read counts for `normalization()`.
 
     ```R
     mergeTCGAandCCLE(outputesult = FALSE)
@@ -106,14 +100,15 @@ Workflow for creating trascriptomic data
     Output : `totalreadcounts.csv `
 
 ## Normalization of RNA-seq counts data
- - Conduct noramlization of RNA-seq .
- - You can specify min and max value for truncation of total read counts.
- - If you do not want to specify values for truncation, please set `min = F` or `max = F`
 
-   ```R
-   normalization(min = 40000000, max = 140000000)
-   ```  
-   Output : `TPM_RLE_postComBat_{TCGA}_{CCLE}.csv`
+- Conduct noramlization of RNA-seq.
+- You can specify min and max value for truncation of total read counts.
+- If you do not want to specify values for truncation, please set `min = F` or `max = F`.
+
+  ```R
+  normalization(min = 40000000, max = 140000000)
+  ```  
+  Output : `TPM_RLE_postComBat_{TCGA}_{CCLE}.csv`
 
 
 
