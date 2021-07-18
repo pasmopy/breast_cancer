@@ -10,14 +10,18 @@ from .set_model import initial_values, param_values
 
 ext = (
     "tar.xz"
-    if not os.path.isfile(os.path.join("transcriptomic_data", "TPM_RLE_postComBat_BRCA_BREAST.csv"))
+    if not os.path.isfile(
+        os.path.join("transcriptomic_data", "TPM_RLE_postComBat_BRCA_BREAST.csv")
+    )
     else "csv"
 )
 
 incorporating_gene_expression_levels = Individualization(
     parameters=C.NAMES,
     species=V.NAMES,
-    transcriptomic_data=os.path.join("transcriptomic_data", f"TPM_RLE_postComBat_BRCA_BREAST.{ext}"),
+    transcriptomic_data=os.path.join(
+        "transcriptomic_data", f"TPM_RLE_postComBat_BRCA_BREAST.{ext}"
+    ),
     gene_expression={
         "ErbB1": ["EGFR"],
         "ErbB2": ["ERBB2"],
@@ -781,13 +785,13 @@ class SearchParam(object):
             y0[j] = indiv[i + len(self.idx_params)]
 
         x[C.V291] = incorporating_gene_expression_levels.as_reaction_rate(
-            __path__[0].split(os.sep)[-1].replace("_", "."), x, "V291", "DUSP"
+            __path__[0].split(os.sep)[-1], x, "V291", "DUSP"
         )
         x[C.V310] = incorporating_gene_expression_levels.as_reaction_rate(
-            __path__[0].split(os.sep)[-1].replace("_", "."), x, "V310", "cMyc"
+            __path__[0].split(os.sep)[-1], x, "V310", "cMyc"
         )
         y0 = incorporating_gene_expression_levels.as_initial_conditions(
-            __path__[0].split(os.sep)[-1].replace("_", "."), x, y0
+            __path__[0].split(os.sep)[-1], x, y0
         )
 
         # parameter constraints
