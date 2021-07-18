@@ -10,13 +10,13 @@ Integrating TCGA and CCLE data for parameterization and individualization of the
 
 ### Download TCGA clinical/subtype information
 
-- Read `transcriptomic_data.R`
+- Read `integration.R`
   ```bash
   $ R
   ```  
 
   ```R
-  source("transcriptomic_data.R")
+  source("integration.R")
   ```
 
 - Run `outputclinical()` or `outputsubtype()`
@@ -31,7 +31,7 @@ Integrating TCGA and CCLE data for parameterization and individualization of the
   outputSubtype("BRCA")
   ```
 
-  Output: `"TCGA Study Abbreviation"_clinic.csv` or `"TCGA Study Abbreviation"_subtype.csv`
+  Output: `{TCGA Study Abbreviation}_clinic.csv` or `{TCGA Study Abbreviation}_subtype.csv`
 
 
 ### Select samples in reference to clinical or subtype data
@@ -46,7 +46,7 @@ Integrating TCGA and CCLE data for parameterization and individualization of the
   ```
 
     **type** :   
-    You can choose `clinical` or `subtype`. If you specify `clinical`, refer to `"TCGA Study Abbreviation"_clinical.csv`, and if you specify `subtype`, refer to `"TCGA Study Abbreviation"_subtype.csv` to select the patient. In order to select each one, you need to run outputClinical() or outputSubtype() before running this code.  
+    You can choose `clinical` or `subtype`. If you specify `clinical`, refer to `{TCGA Study Abbreviation}_clinical.csv`, and if you specify `subtype`, refer to `{TCGA Study Abbreviation}_subtype.csv` to select the patient. In order to select each one, you need to run outputClinical() or outputSubtype() before running this code.  
 
     **ID** :   
     Column name that contains the patient's ID (ex. TCGA-E2-A14U, TCGA-E9-A1RC, ...) in the .csv file referenced by "type". 

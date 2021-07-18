@@ -58,10 +58,10 @@ R:
   $ R
   ```  
 
-- Read `transcriptomic_data.R`
+- Read `integration.R`
 
   ```R
-  source("transcriptomic_data.R")
+  source("integration.R")
   ```
 
 - Run `outputClinical()` or `outputSubtype()`  
@@ -71,7 +71,7 @@ R:
   outputSubtype("BRCA")
   ```
 
-  Output: `"TCGA Study Abbreviation"_clinic.csv` or `"TCGA Study Abbreviation"_subtype.csv`
+  Output: `{TCGA Study Abbreviation}_clinic.csv` or `{TCGA Study Abbreviation}_subtype.csv`
 
 
 ### Select samples in reference to clinical or subtype data
