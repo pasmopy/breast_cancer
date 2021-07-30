@@ -12,6 +12,7 @@ out/
 # patient-specific models
 TCGA_*
 !/models/breast/TCGA_3C_AALK_01A
+!/models/colon/TCGA_4T_AA8H_01A
 
 # sensitivity array
 sensitivity_coefficients/
