@@ -53,11 +53,11 @@ def test_patient_model_simulations():
         if patient != "TCGA_3C_AALK_01A":
             shutil.copytree(path_to_patient("TCGA_3C_AALK_01A"), path_to_patient(f"{patient}"))
     # Execute patient-specific models
-    simulations = PatientModelSimulations(models.breast.__package__, random.sample(TCGA_ID, 10))
+    simulations = PatientModelSimulations(models.breast.__package__, random.sample(TCGA_ID, 5))
     start = time.time()
     assert simulations.run() is None
     elapsed = time.time() - start
-    print(f"Computation time for simulating 10 patients: {elapsed/60:.1f} [min]")
+    print(f"Computation time for simulating 5 patients: {elapsed/60:.1f} [min]")
     # Add new response characteristics
     _droprate: Callable[[np.ndarray], float] = lambda time_course: -(
         time_course[-1] - np.max(time_course)
