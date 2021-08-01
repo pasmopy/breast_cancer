@@ -612,76 +612,50 @@ NAMES: List[str] = [
     "K317",
     "kf318",
     "kf319",
-    #
-    "w_EGFR",
-    "w_ERBB2",
-    "w_ERBB3",
-    "w_ERBB4",
-    #
-    "w_GRB2",
-    #
-    "w_SHC1",
-    "w_SHC2",
-    "w_SHC3",
-    "w_SHC4",
-    #
-    "w_RASA1",
-    "w_RASA2",
-    "w_RASA3",
-    #
-    "w_PIK3CA",
-    "w_PIK3CB",
-    "w_PIK3CD",
-    "w_PIK3CG",
-    #
-    "w_PTEN",
-    #
-    "w_SOS1",
-    "w_SOS2",
-    #
-    "w_GAB1",
-    #
-    "w_HRAS",
-    "w_KRAS",
-    "w_NRAS",
-    #
-    "w_ARAF",
-    "w_BRAF",
-    "w_RAF1",
-    #
-    "w_MAP2K1",
-    "w_MAP2K2",
-    #
-    "w_MAPK1",
-    "w_MAPK3",
-    #
-    "w_AKT1",
-    "w_AKT2",
-    #
-    # "w_RPS6KA1",
-    # "w_RPS6KA2",
-    # "w_RPS6KA3",
-    # "w_RPS6KA6",
-    #
-    # "w_PPP2CA",
-    # "w_PPP2CB",
-    #
-    "w_PTPN1",
-    #
-    # "w_CREB1",
-    #
-    # "w_ELK1",
-    #
-    "w_GSK3B",
-    #
-    "w_DUSP5",
-    "w_DUSP6",
-    "w_DUSP7",
-    #
-    # "w_FOS",
-    #
-    "w_MYC",
 ]
+
+NAMES.extend(
+    [
+        "w_EGFR",
+        "w_ERBB2",
+        "w_ERBB3",
+        "w_ERBB4",
+        "w_GRB2",
+        "w_SHC1",
+        "w_SHC2",
+        "w_SHC3",
+        "w_SHC4",
+        "w_RASA1",
+        "w_RASA2",
+        "w_RASA3",
+        "w_PIK3CA",
+        "w_PIK3CB",
+        "w_PIK3CD",
+        "w_PIK3CG",
+        "w_PTEN",
+        "w_SOS1",
+        "w_SOS2",
+        "w_GAB1",
+        "w_HRAS",
+        "w_KRAS",
+        "w_NRAS",
+        "w_ARAF",
+        "w_BRAF",
+        "w_RAF1",
+        "w_MAP2K1",
+        "w_MAP2K2",
+        "w_MAPK1",
+        "w_MAPK3",
+        "w_AKT1",
+        "w_AKT2",
+        "w_PTPN1",
+        "w_GSK3B",
+        "w_DUSP5",
+        "w_DUSP6",
+        "w_DUSP7",
+        "w_MYC",
+    ]
+)
 
 NUM: int = len(NAMES)
 
