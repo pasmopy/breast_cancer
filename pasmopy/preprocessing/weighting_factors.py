@@ -16,6 +16,8 @@ class WeightingFactors(object):
         BioMASS model object.
     gene_expression : dict
         Pairs of proteins and their related genes.
+    weighting_factors : list of strings
+        List of weighting factors.
     prefix : str (default: "w_")
         Prefix of weighting factors on gene expression levels.
     indentation : str (default: 4 spaces)
@@ -23,6 +25,7 @@ class WeightingFactors(object):
     """
     model: ModelObject
     gene_expression: Dict[str, List[str]]
+    weighting_factors: List[str] = field(default_factory=list, init=False)
     prefix: str = field(default="w_", init=False)
     indentation: str = field(default=" " * 4, init=False)
 
@@ -30,12 +33,11 @@ class WeightingFactors(object):
         """
         Add weighting factors to model parameters.
         """
-        weighting_factors: List[str] = []
         for genes in self.gene_expression.values():
             for gene in genes:
                 if self.prefix + gene not in self.model.parameters:
-                    weighting_factors.append(self.prefix + gene)
-        if weighting_factors:
+                    self.weighting_factors.append(self.prefix + gene)
+        if self.weighting_factors:
             with open(
                 os.path.join(self.model.path, "name2idx", "parameters.py"),
                 mode="r",
@@ -48,9 +50,8 @@ class WeightingFactors(object):
                     lines[line_num] += (
                         f"{self.indentation}[\n"
                         + f'{2 * self.indentation}"'
-                        + f'",\n{2 * self.indentation}"'.join(weighting_factors)
-                        + '",\n'
-                        f"{self.indentation}]\n"
+                        + f'",\n{2 * self.indentation}"'.join(self.weighting_factors)
+                        + f'",\n{self.indentation}]\n'
                     )
                     lines[line_num] += ")\n\nNUM: int = len(NAMES)\n"
             with open(
@@ -72,12 +73,10 @@ class WeightingFactors(object):
         ub : float
             Upper bound.
         """
-        weighting_factors: List[str] = []
-        for param in self.model.parameters:
-            if param.startswith(self.prefix):
-                weighting_factors.append(param)
-        if weighting_factors:
-            search_bounds = [f"search_rgn[:, C.{wf}] = [{lb}, {ub}]" for wf in weighting_factors]
+        if self.weighting_factors:
+            search_bounds = [
+                f"search_rgn[:, C.{wf}] = [{lb}, {ub}]" for wf in self.weighting_factors
+            ]
             with open(
                 os.path.join(self.model.path, "set_search_param.py"),
                 mode="r",
@@ -85,7 +84,20 @@ class WeightingFactors(object):
             ) as f:
                 lines = f.readlines()
             for line_num, line in enumerate(lines):
-                if line.startswith(f"{2 * self.indentation}search_rgn = convert_scale("):
+                if (
+                    line.startswith(f"{2 * self.indentation}]")
+                    and lines[line_num + 3].startswith(
+                        f"{2 * self.indentation}self.idx_initials = "
+                    )
+                ):
+                    lines[line_num] = (
+                        f"{3 * self.indentation}"
+                        + f",\n{3 * self.indentation}".join(
+                            map(lambda _s: "C." + _s, self.weighting_factors)
+                        )
+                        + f",\n{2 * self.indentation}]\n"
+                    )
+                elif line.startswith(f"{2 * self.indentation}search_rgn = convert_scale("):
                     lines[line_num] = (
                         2 * self.indentation
                         + f"\n{2 * self.indentation}".join(search_bounds)
