@@ -5,7 +5,6 @@ import sys
 import time
 from typing import List
 
-import numpy as np
 from pasmopy import PatientModelSimulations
 
 try:
@@ -53,11 +52,11 @@ def test_patient_model_simulations():
         if patient != "TCGA_4T_AA8H_01A":
             shutil.copytree(path_to_patient("TCGA_4T_AA8H_01A"), path_to_patient(f"{patient}"))
     # Execute patient-specific models
-    simulations = PatientModelSimulations(models.colon.__package__, random.sample(TCGA_ID, 5))
+    simulations = PatientModelSimulations(models.colon.__package__, random.sample(TCGA_ID, 4))
     start = time.time()
     assert simulations.run() is None
     elapsed = time.time() - start
-    print(f"Computation time for simulating 5 patients: {elapsed/60:.1f} [min]")
+    print(f"Computation time for simulating 4 patients: {elapsed/60:.1f} [min]")
 
 
 def test_cleanup_models():

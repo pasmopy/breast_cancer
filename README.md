@@ -87,7 +87,7 @@ R:
 
 ### Download TCGA gene expression data (HTSeq-Counts)
 
- - Download the gene expression data of the specified sample types [(Sample Type Codes)](https://gdc.cancer.gov/resources-tcga-users/tcga-code-tables/sample-type-codes) in the cancer type specified by `outputClinical()` or `outputSubtype()`. By running this code, you can get data of only the patients selected by `sampleSelection()`.
+ - Download the gene expression data of the specified sample types ([Sample Type Codes](https://gdc.cancer.gov/resources-tcga-users/tcga-code-tables/sample-type-codes)) in the cancer type specified by `outputClinical()` or `outputSubtype()`. By running this code, you can get data of only the patients selected by `sampleSelection()`.
 
    ```R
    downloadTCGA(cancertype = "BRCA", 
@@ -144,9 +144,55 @@ R:
    Text2Model(os.path.join("models", "erbb_network.txt")).convert()
    ```
 
+1. Add weighting factors for each gene (prefix: `"w_"`) to [`name2idx/parameters.py`](models/breast/TCGA_3C_AALK_01A/name2idx/parameters.py)
+
+    ```python
+    from pasmopy.preprocessing import WeightingFactors
+    from biomass import Model
+
+    from models import erbb_network
+
+
+    model = Model(erbb_network.__package__).create()
+
+    gene_expression = {
+        "ErbB1": ["EGFR"],
+        "ErbB2": ["ERBB2"],
+        "ErbB3": ["ERBB3"],
+        "ErbB4": ["ERBB4"],
+        "Grb2": ["GRB2"],
+        "Shc": ["SHC1", "SHC2", "SHC3", "SHC4"],
+        "RasGAP": ["RASA1", "RASA2", "RASA3"],
+        "PI3K": ["PIK3CA", "PIK3CB", "PIK3CD", "PIK3CG"],
+        "PTEN": ["PTEN"],
+        "SOS": ["SOS1", "SOS2"],
+        "Gab1": ["GAB1"],
+        "RasGDP": ["HRAS", "KRAS", "NRAS"],
+        "Raf": ["ARAF", "BRAF", "RAF1"],
+        "MEK": ["MAP2K1", "MAP2K2"],
+        "ERK": ["MAPK1", "MAPK3"],
+        "Akt": ["AKT1", "AKT2"],
+        "PTP1B": ["PTPN1"],
+        "GSK3b": ["GSK3B"],
+        "DUSP": ["DUSP5", "DUSP6", "DUSP7"],
+        "cMyc": ["MYC"],
+    }
+
+    weighting_factors = WeightingFactors(model, gene_expression)
+    weighting_factors.add()
+    weighting_factors.set_search_bounds()
+    ```
+
 1. Rename `erbb_network/` to CCLE_name or TCGA_ID, e.g., `MCF7_BREAST` or `TCGA_3C_AALK_01A`
 
-1. Add weighting factors for each gene (prefix: `"w_"`) to [`name2idx/parameters.py`](models/breast/TCGA_3C_AALK_01A/name2idx/parameters.py)
+    ```python
+    import shutil
+
+    shutil.move(
+        os.path.join("models", "erbb_network"),
+        os.path.join("models", "breast", "TCGA_3C_AALK_01A")
+    )
+    ```
 
 1. Edit [`set_search_param.py`](models/breast/TCGA_3C_AALK_01A/set_search_param.py)
 
