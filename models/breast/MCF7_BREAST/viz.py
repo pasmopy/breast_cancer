@@ -36,7 +36,7 @@ class Visualization(Observable):
             self.single_observable_options[i].xticks = [0, 30, 60, 90, 120]
             self.single_observable_options[i].xlabel = "Time (min)"
             self.single_observable_options[i].yticks = [0.0, 0.5, 1.0]
-        return self.timecourse_options
+        return self.single_observable_options
 
     def get_multiple_observables_options(self):
 
