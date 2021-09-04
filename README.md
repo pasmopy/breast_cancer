@@ -1,9 +1,5 @@
 # Breast cancer [![Actions Status](https://github.com/pasmopy/breast_cancer/workflows/Tests/badge.svg)](https://github.com/pasmopy/breast_cancer/actions)
 
-This repository contains analysis code for the following paper:
-
-
-
 ## Manual installation of package requirements
 
 General:
@@ -18,7 +14,7 @@ Python:
 
 Julia:
 
--  [BioMASS.jl==0.5.0](https://github.com/biomass-dev/BioMASS.jl)
+- [BioMASS.jl==0.5.0](https://github.com/biomass-dev/BioMASS.jl)
 
 R:
 
@@ -56,7 +52,7 @@ R:
   ```bash
   $ cd transcriptomic_data
   $ R
-  ```  
+  ```
 
 - Read `integration.R`
 
@@ -64,7 +60,7 @@ R:
   source("integration.R")
   ```
 
-- Run `outputClinical()` or `outputSubtype()`  
+- Run `outputClinical()` or `outputSubtype()`
 
   ```R
   outputClinical("BRCA")
@@ -73,13 +69,12 @@ R:
 
   Output: `{TCGA Study Abbreviation}_clinic.csv` or `{TCGA Study Abbreviation}_subtype.csv`
 
-
 ### Select samples in reference to clinical or subtype data
 
-- You can select the patient's state based on the clinical or subtype data obtained above.   
+- You can select the patient's state based on the clinical or subtype data obtained above.
 
   ```R
-  patientSelection(type = subtype, 
+  patientSelection(type = subtype,
                    ID = "patient",
                    pathologic_stage %in% c("Stage_I", "Stage_II"),
                    age_at_initial_pathologic_diagnosis < 60)
@@ -87,36 +82,36 @@ R:
 
 ### Download TCGA gene expression data (HTSeq-Counts)
 
- - Download the gene expression data of the specified sample types ([Sample Type Codes](https://gdc.cancer.gov/resources-tcga-users/tcga-code-tables/sample-type-codes)) in the cancer type specified by `outputClinical()` or `outputSubtype()`. By running this code, you can get data of only the patients selected by `sampleSelection()`.
+- Download the gene expression data of the specified sample types ([Sample Type Codes](https://gdc.cancer.gov/resources-tcga-users/tcga-code-tables/sample-type-codes)) in the cancer type specified by `outputClinical()` or `outputSubtype()`. By running this code, you can get data of only the patients selected by `sampleSelection()`.
 
-   ```R
-   downloadTCGA(cancertype = "BRCA", 
-                sampletype = c("01", "06"),
-                outputresult = FALSE)
-   ```  
-   Output: Number of selected samples
+  ```R
+  downloadTCGA(cancertype = "BRCA",
+               sampletype = c("01", "06"),
+               outputresult = FALSE)
+  ```
 
+  Output: Number of selected samples
 
 ### Download CCLE transcriptomic data
-
 
 - Download CCLE transcriptomic data. You can select cell lines derived from [one specific cancer type](https://github.com/pasmopy/breast_cancer/blob/master/transcriptomic_data/CCLE_cancertype.txt).
 
   ```R
   downloadCCLE(cancertype = "BREAST",
                outputresult = FALSE)
-  ```  
+  ```
+
   Output: Number of selected samples
- 
 
 ### Merge TCGA and CCLE data
- 1. Merge TCGA data download with `downloadTCGA()` and CCLE data download with `downloadCCLE()`.
- 1. Run ComBat-seq program to remove batch effects between TCGA and CCLE datasets.
- 1. Output total read counts of all samples in order to decide the cutoff value of total read counts for `normalization()`.
+
+1.  Merge TCGA data download with `downloadTCGA()` and CCLE data download with `downloadCCLE()`.
+1.  Run ComBat-seq program to remove batch effects between TCGA and CCLE datasets.
+1.  Output total read counts of all samples in order to decide the cutoff value of total read counts for `normalization()`.
 
     ```R
     mergeTCGAandCCLE(outputesult = FALSE)
-    ```  
+    ```
 
     Output : `totalreadcounts.csv`
 
@@ -126,10 +121,11 @@ R:
 - You can specify min and max value for truncation of total read counts.
 - If you do not want to specify values for truncation, please set `min = F` or `max = F`.
 
-    ```R
-    normalization(min = 40000000, max = 140000000)
-    ```  
-    Output : `TPM_RLE_postComBat_{TCGA}_{CCLE}.csv`
+  ```R
+  normalization(min = 40000000, max = 140000000)
+  ```
+
+  Output : `TPM_RLE_postComBat_{TCGA}_{CCLE}.csv`
 
 ## Construction of a comprehensive model of the ErbB signaling network
 
@@ -146,53 +142,53 @@ R:
 
 1. Add weighting factors for each gene (prefix: `"w_"`) to [`name2idx/parameters.py`](models/breast/TCGA_3C_AALK_01A/name2idx/parameters.py)
 
-    ```python
-    from pasmopy.preprocessing import WeightingFactors
-    from biomass import Model
+   ```python
+   from pasmopy.preprocessing import WeightingFactors
+   from biomass import Model
 
-    from models import erbb_network
+   from models import erbb_network
 
 
-    model = Model(erbb_network.__package__).create()
+   model = Model(erbb_network.__package__).create()
 
-    gene_expression = {
-        "ErbB1": ["EGFR"],
-        "ErbB2": ["ERBB2"],
-        "ErbB3": ["ERBB3"],
-        "ErbB4": ["ERBB4"],
-        "Grb2": ["GRB2"],
-        "Shc": ["SHC1", "SHC2", "SHC3", "SHC4"],
-        "RasGAP": ["RASA1", "RASA2", "RASA3"],
-        "PI3K": ["PIK3CA", "PIK3CB", "PIK3CD", "PIK3CG"],
-        "PTEN": ["PTEN"],
-        "SOS": ["SOS1", "SOS2"],
-        "Gab1": ["GAB1"],
-        "RasGDP": ["HRAS", "KRAS", "NRAS"],
-        "Raf": ["ARAF", "BRAF", "RAF1"],
-        "MEK": ["MAP2K1", "MAP2K2"],
-        "ERK": ["MAPK1", "MAPK3"],
-        "Akt": ["AKT1", "AKT2"],
-        "PTP1B": ["PTPN1"],
-        "GSK3b": ["GSK3B"],
-        "DUSP": ["DUSP5", "DUSP6", "DUSP7"],
-        "cMyc": ["MYC"],
-    }
+   gene_expression = {
+       "ErbB1": ["EGFR"],
+       "ErbB2": ["ERBB2"],
+       "ErbB3": ["ERBB3"],
+       "ErbB4": ["ERBB4"],
+       "Grb2": ["GRB2"],
+       "Shc": ["SHC1", "SHC2", "SHC3", "SHC4"],
+       "RasGAP": ["RASA1", "RASA2", "RASA3"],
+       "PI3K": ["PIK3CA", "PIK3CB", "PIK3CD", "PIK3CG"],
+       "PTEN": ["PTEN"],
+       "SOS": ["SOS1", "SOS2"],
+       "Gab1": ["GAB1"],
+       "RasGDP": ["HRAS", "KRAS", "NRAS"],
+       "Raf": ["ARAF", "BRAF", "RAF1"],
+       "MEK": ["MAP2K1", "MAP2K2"],
+       "ERK": ["MAPK1", "MAPK3"],
+       "Akt": ["AKT1", "AKT2"],
+       "PTP1B": ["PTPN1"],
+       "GSK3b": ["GSK3B"],
+       "DUSP": ["DUSP5", "DUSP6", "DUSP7"],
+       "cMyc": ["MYC"],
+   }
 
-    weighting_factors = WeightingFactors(model, gene_expression)
-    weighting_factors.add()
-    weighting_factors.set_search_bounds()
-    ```
+   weighting_factors = WeightingFactors(model, gene_expression)
+   weighting_factors.add()
+   weighting_factors.set_search_bounds()
+   ```
 
 1. Rename `erbb_network/` to CCLE_name or TCGA_ID, e.g., `MCF7_BREAST` or `TCGA_3C_AALK_01A`
 
-    ```python
-    import shutil
+   ```python
+   import shutil
 
-    shutil.move(
-        os.path.join("models", "erbb_network"),
-        os.path.join("models", "breast", "TCGA_3C_AALK_01A")
-    )
-    ```
+   shutil.move(
+       os.path.join("models", "erbb_network"),
+       os.path.join("models", "breast", "TCGA_3C_AALK_01A")
+   )
+   ```
 
 1. Edit [`set_search_param.py`](models/breast/TCGA_3C_AALK_01A/set_search_param.py)
 
@@ -206,7 +202,7 @@ R:
    from . import __path__
    from .name2idx import C, V
    from .set_model import initial_values, param_values
-   
+
 
    incorporating_gene_expression_levels = Individualization(
        parameters=C.NAMES,
@@ -361,8 +357,8 @@ R:
 
    ```python
    simulations.subtyping(
-       None,
-       {
+       fname=None,
+       dynamical_features={
            "Phosphorylated_Akt": {"EGF": ["max"], "HRG": ["max"]},
            "Phosphorylated_ERK": {"EGF": ["max"], "HRG": ["max"]},
            "Phosphorylated_c-Myc": {"EGF": ["max"], "HRG": ["max"]},
@@ -390,7 +386,7 @@ R:
   from pasmopy import PatientModelAnalyses
 
   import models.breast
-  
+
 
   with open (os.path.join("models", "breast", "selected_tnbc.txt"), mode="r") as f:
       TNBC_ID = f.read().splitlines()
@@ -426,7 +422,7 @@ R:
    erbb_expression_ratio = pd.read_csv(
        os.path.join("data", "ErbB_expression_ratio.csv"),
        index_col=0
-    )
+   )
    compounds = ["Erlotinib", "Lapatinib", "AZD6244", "PD-0325901"]
    for compound in compounds:
        ccle.save_all(erbb_expression_ratio, compound)
