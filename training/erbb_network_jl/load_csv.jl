@@ -103,33 +103,11 @@ function incorporate_Akt(p::Vector{Float64}, cell_line::String)::Float64
             p[C.w_AKT2] * get_tpm("AKT2", cell_line))
 end
 
-#= 
-function incorporate_RSK(p::Vector{Float64}, cell_line::String)::Float64
-    return (p[C.w_RPS6KA1] * get_tpm("RPS6KA1", cell_line) +
-            p[C.w_RPS6KA2] * get_tpm("RPS6KA2", cell_line) +
-            p[C.w_RPS6KA3] * get_tpm("RPS6KA3", cell_line) +
-            p[C.w_RPS6KA6] * get_tpm("RPS6KA6", cell_line))
-end =#
-
-#= 
-function incorporate_PP2A(p::Vector{Float64}, cell_line::String)::Float64
-    return (p[C.w_PPP2CA] * get_tpm("PPP2CA", cell_line) +
-            p[C.w_PPP2CB] * get_tpm("PPP2CB", cell_line))
-end =#
 
 function incorporate_PTP1B(p::Vector{Float64}, cell_line::String)::Float64
     return p[C.w_PTPN1] * get_tpm("PTPN1", cell_line)
 end
 
-#= 
-function incorporate_CREB(p::Vector{Float64}, cell_line::String)::Float64
-    return p[C.w_CREB1] * get_tpm("CREB1", cell_line)
-end
-
-
-function incorporate_Elk1(p::Vector{Float64}, cell_line::String)::Float64
-    return p[C.w_ELK1] * get_tpm("ELK1", cell_line)
-end =#
 
 function incorporate_GSK3b(p::Vector{Float64}, cell_line::String)::Float64
     return p[C.w_GSK3B] * get_tpm("GSK3B", cell_line)
@@ -142,10 +120,6 @@ function incorporate_DUSP(p::Vector{Float64}, cell_line::String)::Float64
             p[C.w_DUSP7] * get_tpm("DUSP7", cell_line))
 end
 
-#= 
-function incorporate_cFos(p::Vector{Float64}, cell_line::String)::Float64
-    return p[C.w_FOS] * get_tpm("FOS", cell_line)
-end =#
 
 function incorporate_cMyc(p::Vector{Float64}, cell_line::String)::Float64
     return p[C.w_MYC] * get_tpm("MYC", cell_line)
@@ -174,10 +148,6 @@ function individualize!(
     u0[V.ERK] *= incorporate_ERK(p, cell_line)
     u0[V.PTEN] *= incorporate_PTEN(p, cell_line)
     u0[V.Akt] *= incorporate_Akt(p, cell_line)
-    # u0[V.RSK] *= incorporate_RSK(p, cell_line)
-    # u0[V.PP2A] *= incorporate_PP2A(p, cell_line)
-    # u0[V.CREB] *= incorporate_CREB(p, cell_line)
-    # u0[V.Elk1] *= incorporate_Elk1(p, cell_line)
     u0[V.GSK3b] *= incorporate_GSK3b(p, cell_line)
 
     # as transcription rates
@@ -210,10 +180,6 @@ function scale_using_mcf7!(
     u0[V.ERK] *= incorporate_ERK(p, cell_line_2) / incorporate_ERK(p, "MCF7_BREAST")
     u0[V.PTEN] *= incorporate_PTEN(p, cell_line_2) / incorporate_PTEN(p, "MCF7_BREAST")
     u0[V.Akt] *= incorporate_Akt(p, cell_line_2) / incorporate_Akt(p, "MCF7_BREAST")
-    # u0[V.RSK] *= incorporate_RSK(p, cell_line_2) / incorporate_RSK(p, "MCF7_BREAST")
-    # u0[V.PP2A] *= incorporate_PP2A(p, cell_line_2) / incorporate_PP2A(p, "MCF7_BREAST")
-    # u0[V.CREB] *= incorporate_CREB(p, cell_line_2) / incorporate_CREB(p, "MCF7_BREAST")
-    # u0[V.Elk1] *= incorporate_Elk1(p, cell_line_2) / incorporate_Elk1(p, "MCF7_BREAST")
     u0[V.GSK3b] *= incorporate_GSK3b(p, cell_line_2) / incorporate_GSK3b(p, "MCF7_BREAST")
 
     # as transcription rates
