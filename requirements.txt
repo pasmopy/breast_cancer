@@ -1,5 +1,5 @@
 pasmopy
-biomass>=0.5.2
+biomass==0.5.2
 matplotlib
 numpy>=1.17
 pandas>=0.23
