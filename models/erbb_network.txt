@@ -318,9 +318,6 @@ cMycPP is dephosphorylated --> cMycP
 cMyc is degraded
 cMycPP is degraded
 
-# observables
-# p: parameters
-# u: species
 @obs Phosphorylated_Akt: u[AktP]
 @obs Phosphorylated_ERK: u[ERKP] + u[ERKPP]
 @obs Phosphorylated_c-Myc: u[cMycP] + u[cMycPP]
