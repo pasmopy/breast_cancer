@@ -8,7 +8,6 @@ from . import __path__
 from .name2idx import C, V
 from .set_model import initial_values, param_values
 
-
 incorporating_gene_expression_levels = Individualization(
     parameters=C.NAMES,
     species=V.NAMES,
@@ -701,27 +700,13 @@ class SearchParam(object):
             C.w_AKT1,
             C.w_AKT2,
             #
-            # C.w_RPS6KA1,
-            # C.w_RPS6KA2,
-            # C.w_RPS6KA3,
-            # C.w_RPS6KA6,
-            #
-            # C.w_PPP2CA,
-            # C.w_PPP2CB,
-            #
             C.w_PTPN1,
-            #
-            # C.w_CREB1,
-            #
-            # C.w_ELK1,
             #
             C.w_GSK3B,
             #
             C.w_DUSP5,
             C.w_DUSP6,
             C.w_DUSP7,
-            #
-            # C.w_FOS,
             #
             C.w_MYC,
         ]
