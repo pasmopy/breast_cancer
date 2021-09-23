@@ -67,7 +67,7 @@ R:
   outputSubtype("BRCA")
   ```
 
-  Output: `{TCGA Study Abbreviation}_clinic.csv` or `{TCGA Study Abbreviation}_subtype.csv`
+  Output: `<TCGA Study Abbreviation>_clinic.csv` or `<TCGA Study Abbreviation>_subtype.csv`
 
 ### Select samples in reference to clinical or subtype data
 
@@ -119,13 +119,13 @@ R:
 
 - Conduct noramlization of RNA-seq.
 - You can specify min and max value for truncation of total read counts.
-- If you do not want to specify values for truncation, please set `min = F` or `max = F`.
+- If you do not want to specify values for truncation, please set `min=F` or `max=F`.
 
   ```R
-  normalization(min = 40000000, max = 140000000)
+  normalization(min=40000000, max=140000000)
   ```
 
-  Output : `TPM_RLE_postComBat_{TCGA}_{CCLE}.csv`
+  Output : `TPM_RLE_postComBat_<TCGA>_<CCLE>.csv`
 
 ## Construction of a comprehensive model of the ErbB signaling network
 
