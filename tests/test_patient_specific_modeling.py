@@ -68,7 +68,7 @@ def test_model_construction():
     }
 
     weighting_factors = WeightingFactors(model, gene_expression)
-    weighting_factors.add()
+    weighting_factors.add_to_params()
     weighting_factors.set_search_bounds()
     # Edit observable.py, update normalization
     with open(

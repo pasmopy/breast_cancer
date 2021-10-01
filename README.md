@@ -54,13 +54,13 @@ R:
   $ R
   ```
 
-- Read `integration.R`
+  - Read `integration.R`
 
   ```R
   source("integration.R")
   ```
 
-- Run `outputClinical()` or `outputSubtype()`
+  - Run `outputClinical()` or `outputSubtype()`
 
   ```R
   outputClinical("BRCA")
@@ -75,9 +75,9 @@ R:
 
   ```R
   patientSelection(type = subtype,
-                   ID = "patient",
-                   pathologic_stage %in% c("Stage_I", "Stage_II"),
-                   age_at_initial_pathologic_diagnosis < 60)
+                  ID = "patient",
+                  pathologic_stage %in% c("Stage_I", "Stage_II"),
+                  age_at_initial_pathologic_diagnosis < 60)
   ```
 
 ### Download TCGA gene expression data (HTSeq-Counts)
@@ -86,8 +86,8 @@ R:
 
   ```R
   downloadTCGA(cancertype = "BRCA",
-               sampletype = c("01", "06"),
-               outputresult = FALSE)
+              sampletype = c("01", "06"),
+              outputresult = FALSE)
   ```
 
   Output: Number of selected samples
@@ -98,7 +98,7 @@ R:
 
   ```R
   downloadCCLE(cancertype = "BREAST",
-               outputresult = FALSE)
+              outputresult = FALSE)
   ```
 
   Output: Number of selected samples
@@ -175,7 +175,7 @@ R:
    }
 
    weighting_factors = WeightingFactors(model, gene_expression)
-   weighting_factors.add()
+   weighting_factors.add_to_params()
    weighting_factors.set_search_bounds()
    ```
 
@@ -312,10 +312,10 @@ R:
    breast_cancer_models = []
    path_to_models = os.path.join("models", "breast")
    for model in os.listdir(path_to_models):
-        if os.path.isdir(os.path.join(path_to_models, model)) and (
-            model.startswith("TCGA_") or model.endswith("_BREAST")
-        ):
-            breast_cancer_models.append(model)
+       if os.path.isdir(os.path.join(path_to_models, model)) and (
+           model.startswith("TCGA_") or model.endswith("_BREAST")
+       ):
+           breast_cancer_models.append(model)
    # Set optimized parameters
    for model in breast_cancer_models:
        shutil.copytree(
