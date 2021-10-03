@@ -35,13 +35,41 @@ R:
 
 - [Integration of TCGA and CCLE data](#integration-of-tcga-and-ccle-data)
 
-- [Construction of a comprehensive model of the ErbB signaling network](#construction-of-a-comprehensive-model-of-the-ErbB-signaling-network)
+  - [Download TCGA clinical/subtype information](#download-tcga-clinicalsubtype-information)
+
+  - [Select samples in reference to clinical or subtype data](#select-samples-in-reference-to-clinical-or-subtype-data)
+
+  - [Download TCGA gene expression data (HTSeq-Counts)](#download-tcga-gene-expression-data-htseq-counts)
+
+  - [Download CCLE transcriptomic data](#download-ccle-transcriptomic-data)
+
+  - [Merge TCGA and CCLE data](#merge-tcga-and-ccle-data)
+
+  - [Normalize RNA-seq counts data](#normalize-rna-seq-counts-data)
+
+- [Construction of a comprehensive model of the ErbB signaling network](#construction-of-a-comprehensive-model-of-the-erbb-signaling-network)
+
+  - [From text into executable models](#from-text-into-executable-models)
+
+  - [Other tasks for incorporating gene expression levels](#other-tasks-for-incorporating-gene-expression-levels)
 
 - [Individualization of the mechanistic model](#individualization-of-the-mechanistic-model)
 
+  - [Parameter estimation](#parameter-estimation)
+
+  - [Patient-specific simulations](#patient-specific-simulations)
+
 - [Subtype classification based on the ErbB signaling dynamics](#subtype-classification-based-on-the-ErbB-signaling-dynamics)
 
+  - [Extraction of response characteristics from patient-specific simulations](#extraction-of-response-characteristics-from-patient-specific-simulations)
+
+  - [Model-based patient stratification](#model-based-patient-stratification)
+
 - [Investigation of patient-specific pathway activities](#investigation-of-patient-specific-pathway-activities)
+
+  - [Sensitivity analysis](#sensitivity-analysis)
+
+  - [Drug response data analysis](#drug-response-data-analysis)
 
 ## Integration of TCGA and CCLE data
 
@@ -54,13 +82,13 @@ R:
   $ R
   ```
 
-  - Read `integration.R`
+- Read `integration.R`
 
   ```R
   source("integration.R")
   ```
 
-  - Run `outputClinical()` or `outputSubtype()`
+- Run `outputClinical()` or `outputSubtype()`
 
   ```R
   outputClinical("BRCA")
@@ -115,7 +143,7 @@ R:
 
     Output : `totalreadcounts.csv`
 
-### Normalization of RNA-seq counts data
+### Normalize RNA-seq counts data
 
 - Conduct noramlization of RNA-seq.
 - You can specify min and max value for truncation of total read counts.
@@ -129,6 +157,8 @@ R:
 
 ## Construction of a comprehensive model of the ErbB signaling network
 
+### From text into executable models
+
 1. Use `pasmopy.Text2Model` to build a mechanistic model
 
    ```python
@@ -139,6 +169,19 @@ R:
 
    Text2Model(os.path.join("models", "erbb_network.txt")).convert()
    ```
+
+1. Rename `erbb_network/` to CCLE_name or TCGA_ID, e.g., `MCF7_BREAST` or `TCGA_3C_AALK_01A`
+
+   ```python
+   import shutil
+
+   shutil.move(
+       os.path.join("models", "erbb_network"),
+       os.path.join("models", "breast", "TCGA_3C_AALK_01A")
+   )
+   ```
+
+### Other tasks for incorporating gene expression levels
 
 1. Add weighting factors for each gene (prefix: `"w_"`) to [`name2idx/parameters.py`](models/breast/TCGA_3C_AALK_01A/name2idx/parameters.py)
 
@@ -177,17 +220,6 @@ R:
    weighting_factors = WeightingFactors(model, gene_expression)
    weighting_factors.add_to_params()
    weighting_factors.set_search_bounds()
-   ```
-
-1. Rename `erbb_network/` to CCLE_name or TCGA_ID, e.g., `MCF7_BREAST` or `TCGA_3C_AALK_01A`
-
-   ```python
-   import shutil
-
-   shutil.move(
-       os.path.join("models", "erbb_network"),
-       os.path.join("models", "breast", "TCGA_3C_AALK_01A")
-   )
    ```
 
 1. Edit [`set_search_param.py`](models/breast/TCGA_3C_AALK_01A/set_search_param.py)
@@ -261,7 +293,9 @@ R:
 
 ## Individualization of the mechanistic model
 
-### Use time-course datasets to train kinetic constants and weighting factors
+### Parameter estimation
+
+Here, we use phospho-protein time-course datasets to train kinetic constants and weighting factors.
 
 1. Build a mechanistic model to identify model parameters
 
@@ -324,7 +358,7 @@ R:
        )
    ```
 
-### Execute patient-specific models
+### Patient-specific simulations
 
 - Use `pasmopy.PatientModelSimulations`
 
@@ -353,26 +387,30 @@ R:
 
 ## Subtype classification based on the ErbB signaling dynamics
 
-1. Extract response characteristics from patient-specific simulations
+### Extraction of response characteristics from patient-specific simulations
 
-   ```python
-   simulations.subtyping(
-       fname=None,
-       dynamical_features={
-           "Phosphorylated_Akt": {"EGF": ["max"], "HRG": ["max"]},
-           "Phosphorylated_ERK": {"EGF": ["max"], "HRG": ["max"]},
-           "Phosphorylated_c-Myc": {"EGF": ["max"], "HRG": ["max"]},
-       }
-   )
-   ```
+- Execute `subtyping()`
 
-1. Visualize patient classification by executing [`brca_heatmap.R`](classification/brca_heatmap.R)
+  ```python
+  simulations.subtyping(
+      fname=None,
+      dynamical_features={
+          "Phosphorylated_Akt": {"EGF": ["max"], "HRG": ["max"]},
+          "Phosphorylated_ERK": {"EGF": ["max"], "HRG": ["max"]},
+          "Phosphorylated_c-Myc": {"EGF": ["max"], "HRG": ["max"]},
+      }
+  )
+  ```
 
-   ```bash
-   $ cd classification
-   # $ Rscript brca_heatmap.R [n_cluster: int] [figsize: tuple]
-   $ Rscript brca_heatmap.R 6 8,5
-   ```
+### Model-based patient stratification
+
+- Run [`brca_heatmap.R`](classification/brca_heatmap.R)
+
+  ```bash
+  $ cd classification
+  # $ Rscript brca_heatmap.R [n_cluster: int] [figsize: tuple]
+  $ Rscript brca_heatmap.R 6 8,5
+  ```
 
 ## Investigation of patient-specific pathway activities
 
