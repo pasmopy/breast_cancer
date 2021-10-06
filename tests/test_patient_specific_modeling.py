@@ -5,8 +5,7 @@ import time
 from typing import Callable, List
 
 import numpy as np
-from biomass import Model
-from pasmopy import PatientModelSimulations, Text2Model
+from pasmopy import Model, PatientModelSimulations, Text2Model
 from pasmopy.preprocessing import WeightingFactors
 
 from .C_erbb_network import *
@@ -68,7 +67,7 @@ def test_model_construction():
     }
 
     weighting_factors = WeightingFactors(model, gene_expression)
-    weighting_factors.add()
+    weighting_factors.add_to_params()
     weighting_factors.set_search_bounds()
     # Edit observable.py, update normalization
     with open(
