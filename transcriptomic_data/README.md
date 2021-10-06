@@ -45,15 +45,15 @@ Integrating TCGA and CCLE data for parameterization and individualization of the
                    age_at_initial_pathologic_diagnosis < 80)
   ```
 
-  **Parameters** :
+  **Parameters**:
 
-  `type` :  
+  `type`:  
    You can choose `clinical` or `subtype`. If you specify `clinical`, refer to `<TCGA Study Abbreviation>_clinical.csv`, and if you specify `subtype`, refer to `<TCGA Study Abbreviation>_subtype.csv` to select the patient. In order to select each one, you need to run `outputClinical()` or `outputSubtype()` before running this code.
 
-  `ID` :  
+  `ID`:  
    Column name that contains the patient's ID (ex. TCGA-E2-A14U, TCGA-E9-A1RC, ...) in the .csv file referenced by "type".
 
-  `*args` :  
+  `*args`:  
    You can set multiple conditions for selecting samples.
 
   | Expression                | Meaning                                                |
@@ -73,7 +73,9 @@ Integrating TCGA and CCLE data for parameterization and individualization of the
                outputresult = FALSE)
   ```
 
-  Output: Number of selected samples
+  Output:
+
+  - Number of selected samples
 
 ### Download CCLE transcriptomic data
 
@@ -84,7 +86,9 @@ Integrating TCGA and CCLE data for parameterization and individualization of the
                outputresult = FALSE)
   ```
 
-  Output: Number of selected samples
+  Output:
+
+  - Number of selected samples
 
 ### Merge TCGA and CCLE data
 
@@ -96,7 +100,9 @@ Integrating TCGA and CCLE data for parameterization and individualization of the
     mergeTCGAandCCLE(outputesult = FALSE)
     ```
 
-    Output : `totalreadcounts.csv `
+    Output:
+
+    - `totalreadcounts.csv `
 
 ### Normalization of RNA-seq counts data
 
@@ -108,7 +114,9 @@ Integrating TCGA and CCLE data for parameterization and individualization of the
   normalization(min=40000000, max=140000000)
   ```
 
-  Output : `TPM_RLE_postComBat_<TCGA>_<CCLE>.csv`
+  Output:
+
+  - `TPM_RLE_postComBat_<TCGA>_<CCLE>.csv`
 
 ## Data transformation for reusing parameter sets
 
@@ -129,23 +137,23 @@ value_transformation(upstream = BRCA_TPM,
                      outputfile = "TPM_RLE_postComBat_COAD_BREAST.csv")
 ```
 
-**Parameters** :
+**Parameters**:
 
-`upstream` :  
+`upstream`:  
  Gene expression data used for parameter estimation.
 
-`origin` :  
+`origin`:  
  Gene expression data for the samples for which you want to predict dynamics using the parameters estimated by `optimizeddata`.
 
-`gene` :  
+`gene`:  
  List of genes used in the ODE model.
 
-`cellline` :  
+`cellline`:  
  Cell lines for which time-series experimental data were collected.
 
-`outputfile` :  
+`outputfile`:  
  Name of output file.
 
-**Output** :
+**Output**:
 
-`"outputfile"`
+- `outputfile`
