@@ -1,6 +1,6 @@
 pasmopy
 biomass==0.5.2
-matplotlib
+matplotlib>=3.0
 numpy>=1.17
 pandas>=0.23
 seaborn>=0.11
