@@ -186,8 +186,8 @@ R:
 1. Add weighting factors for each gene (prefix: `"w_"`) to [`name2idx/parameters.py`](models/breast/TCGA_3C_AALK_01A/name2idx/parameters.py)
 
    ```python
+   from pasmopy import Model
    from pasmopy.preprocessing import WeightingFactors
-   from biomass import Model
 
    from models import erbb_network
 

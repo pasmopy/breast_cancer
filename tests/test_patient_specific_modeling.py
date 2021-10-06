@@ -5,8 +5,7 @@ import time
 from typing import Callable, List
 
 import numpy as np
-from biomass import Model
-from pasmopy import PatientModelSimulations, Text2Model
+from pasmopy import Model, PatientModelSimulations, Text2Model
 from pasmopy.preprocessing import WeightingFactors
 
 from .C_erbb_network import *
