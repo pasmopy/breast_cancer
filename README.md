@@ -103,9 +103,9 @@ R:
 
   ```R
   patientSelection(type = subtype,
-                  ID = "patient",
-                  pathologic_stage %in% c("Stage_I", "Stage_II"),
-                  age_at_initial_pathologic_diagnosis < 60)
+                   ID = "patient",
+                   pathologic_stage %in% c("Stage_I", "Stage_II"),
+                   age_at_initial_pathologic_diagnosis < 60)
   ```
 
 ### Download TCGA gene expression data (HTSeq-Counts)
@@ -114,8 +114,8 @@ R:
 
   ```R
   downloadTCGA(cancertype = "BRCA",
-              sampletype = c("01", "06"),
-              outputresult = FALSE)
+               sampletype = c("01", "06"),
+               outputresult = FALSE)
   ```
 
   Output: Number of selected samples
@@ -126,7 +126,7 @@ R:
 
   ```R
   downloadCCLE(cancertype = "BREAST",
-              outputresult = FALSE)
+               outputresult = FALSE)
   ```
 
   Output: Number of selected samples
@@ -159,7 +159,7 @@ R:
 
 ### From text into executable models
 
-1. Use `pasmopy.Text2Model` to build a mechanistic model
+1. Use [`pasmopy.Text2Model`](https://pasmopy.readthedocs.io/en/latest/model_development.html) to build a mechanistic model
 
    ```python
    import os
