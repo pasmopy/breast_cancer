@@ -6,7 +6,7 @@ Integrating TCGA and CCLE data for parameterization and individualization of the
 
 | Language | Dependent packages                                                     |
 | -------- | ---------------------------------------------------------------------- |
-| R        | dplyr, edgeR, sva, tibble, data.table, stringr, TCGAbiolinks , biomaRt |
+| `R>=4.0` | dplyr, edgeR, sva, tibble, data.table, stringr, TCGAbiolinks , biomaRt |
 
 ### Download TCGA clinical/subtype information
 
@@ -47,21 +47,21 @@ Integrating TCGA and CCLE data for parameterization and individualization of the
 
   **Parameters**:
 
-  `type`:  
-   You can choose `clinical` or `subtype`. If you specify `clinical`, refer to `<TCGA Study Abbreviation>_clinical.csv`, and if you specify `subtype`, refer to `<TCGA Study Abbreviation>_subtype.csv` to select the patient. In order to select each one, you need to run `outputClinical()` or `outputSubtype()` before running this code.
+  - `type`:  
+    You can choose `clinical` or `subtype`. If you specify `clinical`, refer to `<TCGA Study Abbreviation>_clinical.csv`, and if you specify `subtype`, refer to `<TCGA Study Abbreviation>_subtype.csv` to select the patient. In order to select each one, you need to run `outputClinical()` or `outputSubtype()` before running this code.
 
-  `ID`:  
-   Column name that contains the patient's ID (ex. TCGA-E2-A14U, TCGA-E9-A1RC, ...) in the .csv file referenced by "type".
+  - `ID`:  
+    Column name that contains the patient's ID (ex. TCGA-E2-A14U, TCGA-E9-A1RC, ...) in the .csv file referenced by "type".
 
-  `*args`:  
-   You can set multiple conditions for selecting samples.
+  - `*args`:  
+    You can set multiple conditions for selecting samples.
 
-  | Expression                | Meaning                                                |
-  | ------------------------- | ------------------------------------------------------ |
-  | `x == "A"`                | All patients meeting "A" in column x                   |
-  | `x %in% c("A", "B", "C")` | All patients meeting "A" or "B" or "C" in column x     |
-  | `x > A`                   | All patients having a value greater than A in column x |
-  | `x < A`                   | All patients having a value less than A in column x    |
+    | Expression                | Meaning                                                |
+    | ------------------------- | ------------------------------------------------------ |
+    | `x == "A"`                | All patients meeting "A" in column x                   |
+    | `x %in% c("A", "B", "C")` | All patients meeting "A" or "B" or "C" in column x     |
+    | `x > A`                   | All patients having a value greater than A in column x |
+    | `x < A`                   | All patients having a value less than A in column x    |
 
 ### Download TCGA gene expression data (HTSeq-Counts)
 
@@ -139,20 +139,20 @@ value_transformation(upstream = BRCA_TPM,
 
 **Parameters**:
 
-`upstream`:  
- Gene expression data used for parameter estimation.
+- `upstream`:  
+  Gene expression data used for parameter estimation.
 
-`origin`:  
- Gene expression data for the samples for which you want to predict dynamics using the parameters estimated by `optimizeddata`.
+- `origin`:  
+  Gene expression data for the samples for which you want to predict dynamics using the parameters estimated by `optimizeddata`.
 
-`gene`:  
- List of genes used in the ODE model.
+- `gene`:  
+  List of genes used in the ODE model.
 
-`cellline`:  
- Cell lines for which time-series experimental data were collected.
+- `cellline`:  
+  Cell lines for which time-series experimental data were collected.
 
-`outputfile`:  
- Name of output file.
+- `outputfile`:  
+  Name of output file.
 
 **Output**:
 
