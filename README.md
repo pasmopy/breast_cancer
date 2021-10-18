@@ -1,4 +1,4 @@
-# Breast cancer [![Actions Status](https://github.com/pasmopy/breast_cancer/workflows/Tests/badge.svg)](https://github.com/pasmopy/breast_cancer/actions)
+# Breast Cancer [![Actions Status](https://github.com/pasmopy/breast_cancer/workflows/Tests/badge.svg)](https://github.com/pasmopy/breast_cancer/actions)
 
 ## Manual installation of package requirements
 
@@ -297,6 +297,9 @@ R:
 
 Here, we use phospho-protein time-course datasets to train kinetic constants and weighting factors.
 
+**Note**:
+In this study, we used `BioMASS.jl`, but in most cases you can use `pasmopy.optimize()` function for parameter estimation.
+
 1. Build a mechanistic model to identify model parameters
 
    ```python
@@ -365,14 +368,16 @@ Here, we use phospho-protein time-course datasets to train kinetic constants and
   ```python
   import os
   import shutil
+  from pathlib import Path
 
   from pasmopy import PatientModelSimulations
 
   import models.breast
 
 
-  with open (os.path.join("models", "breast", "sample_names.txt"), mode="r") as f:
-      TCGA_ID = f.read().splitlines()
+  TCGA_ID = [
+      l.strip() for l in Path("models", "breast", "sample_names.txt").read_text("utf-8").splitlines()
+  ]
   # Create patient-specific models
   for patient in TCGA_ID:
       if patient != "TCGA_3C_AALK_01A":
@@ -420,14 +425,16 @@ Here, we use phospho-protein time-course datasets to train kinetic constants and
 
   ```python
   import os
+  from pathlib import Path
 
   from pasmopy import PatientModelAnalyses
 
   import models.breast
 
 
-  with open (os.path.join("models", "breast", "selected_tnbc.txt"), mode="r") as f:
-      TNBC_ID = f.read().splitlines()
+  TCGA_ID = [
+      l.strip() for l in Path("models", "breast", "selected_tnbc.txt").read_text("utf-8").splitlines()
+  ]
   analyses = PatientModelAnalyses(
       models.breast.__package__,
       TNBC_ID,
