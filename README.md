@@ -1,4 +1,4 @@
-[![pasmopy-project](resources/images/social-preview-pasmopy.png)](https://pasmopy.readthedocs.io)
+[![pasmopy-project](https://repository-images.githubusercontent.com/334852660/03d74ab9-2bd2-4f90-bd9d-b0f7a71fd3f1)](https://pasmopy.readthedocs.io)
 
 # The Pasmopy Project: Breast Cancer [![Actions Status](https://github.com/pasmopy/breast_cancer/workflows/Tests/badge.svg)](https://github.com/pasmopy/breast_cancer/actions)
 
