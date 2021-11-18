@@ -6,7 +6,7 @@
 
 - [Manual installation of package requirements](https://github.com/pasmopy/breast_cancer/wiki/Manual-installation-of-package-requirements)
 
-## Table of contents
+## Getting Started
 
 1. [Integration of TCGA and CCLE data](https://github.com/pasmopy/breast_cancer/wiki/Integration-of-TCGA-and-CCLE-data)
 
