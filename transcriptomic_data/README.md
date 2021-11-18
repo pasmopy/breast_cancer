@@ -130,8 +130,8 @@ COAD_TPM <- fread("TPM_RLE_postComBat_COAD_BREAST.csv")
 gene <- scan(gene.txt, what="character")
 cellline <- c("MCF7_BREAST", "BT474_BREAST", "SKBR3_BREAST", "MDAMB231_BREAST")
 
-value_transformation(upstream = BRCA_TPM,
-                     origin = COAD_TPM,
+value_transformation(origin = BRCA_TPM,
+                     upstream = COAD_TPM,
                      gene = gene,
                      cellline = cellline,
                      outputfile = "TPM_RLE_postComBat_COAD_BREAST.csv")
@@ -139,10 +139,10 @@ value_transformation(upstream = BRCA_TPM,
 
 **Parameters**:
 
-- `upstream`:  
+- `origin`:  
   Gene expression data used for parameter estimation.
 
-- `origin`:  
+- `upstream`:  
   Gene expression data for the samples for which you want to predict dynamics using the parameters estimated by `optimizeddata`.
 
 - `gene`:  
