@@ -1,9 +1,9 @@
 
 #value_transformation
 
-value_transformation <- function(upstream, origin, gene, cellline, outputfile){
-  optimizeddata_genelist <- upstream[upstream$Description %in% genelist,]
-  newdata_genelist <- origin[origin$Description %in% genelist,]
+value_transformation <- function(origin, upstream, gene, cellline, outputfile){
+  optimizeddata_genelist <- origin[origin$Description %in% genelist,]
+  newdata_genelist <- upstream[upstream$Description %in% genelist,]
   
   newdata_converted <- c()
   for(i in 1:length(gene)){
