@@ -161,7 +161,7 @@ def test_patient_model_simulations():
     start = time.time()
     assert simulations.run() is None
     elapsed = time.time() - start
-    print(f"Computation time for simulating 6 patients: {elapsed/60:.1f} [min]")
+    print(f"Computation time: {elapsed/60:.1f} [min]")
     # Add new response characteristics
     _droprate: Callable[[np.ndarray], float] = (
         lambda time_course: -(time_course[-1] - np.max(time_course)) / (len(time_course) - np.argmax(time_course))

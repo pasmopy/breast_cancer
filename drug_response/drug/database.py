@@ -1,6 +1,6 @@
 import os
 from dataclasses import dataclass, field
-from typing import List, NamedTuple, NoReturn, Optional
+from typing import Dict, List, NamedTuple, NoReturn, Optional
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -33,9 +33,15 @@ class CancerCellLineEncyclopedia(object):
 
     Attributes
     ----------
-    _drug_response_data : pandas DataFrame
+    drug_alias : dict
+        Other drug names.
+    _drug_response_data : ``pandas.DataFrame``
         Pharmacologic profiles for 24 anticancer drugs across 504 cell lines.
     """
+    drug_alias: Dict[str, str] = field(
+        default_factory=lambda: {"AZD6244": "Selumetinib", "ZD-6474": "Vandetanib"},
+        init=False,
+    )
     _drug_response_data: pd.DataFrame = field(
         default=pd.read_csv(
             "https://data.broadinstitute.org/ccle_legacy_data/"
@@ -48,12 +54,9 @@ class CancerCellLineEncyclopedia(object):
     def drug_response_data(self) -> pd.DataFrame:
         return self._drug_response_data
 
-    @staticmethod
-    def _convert_drug_name(name: str) -> str:
-        if name == "AZD6244":
-            return "Selumetinib"
-        elif name == "ZD-6474":
-            return "Vandetanib"
+    def _convert_drug_name(self, name: str) -> str:
+        if name in self.drug_alias.keys():
+            return self.drug_alias[name]
         else:
             return name
     
