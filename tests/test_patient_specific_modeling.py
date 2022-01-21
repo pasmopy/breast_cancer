@@ -1,11 +1,13 @@
 import os
+import random
 import shutil
 import sys
 import time
+from pathlib import Path
 from typing import Callable, List
 
 import numpy as np
-from pasmopy import Model, PatientModelSimulations, Text2Model
+from pasmopy import Model, PatientModelAnalyses, PatientModelSimulations, Text2Model
 from pasmopy.preprocessing import WeightingFactors
 
 from .C_erbb_network import *
@@ -27,6 +29,10 @@ def path_to_patient(patient_id: str) -> str:
 
 with open(path_to_patient("sample_names.txt"), mode="r") as f:
     TCGA_ID = f.read().splitlines()
+
+
+with open(path_to_patient("selected_tnbc.txt"), mode="r") as f:
+    TNBC_ID = f.read().splitlines()
 
 
 def test_model_construction():
@@ -155,13 +161,11 @@ def test_patient_model_simulations():
         if patient != "TCGA_3C_AALK_01A":
             shutil.copytree(path_to_patient("TCGA_3C_AALK_01A"), path_to_patient(f"{patient}"))
     # Execute patient-specific models
-    with open (os.path.join("models", "breast", "selected_tnbc.txt"), mode="r") as f:
-        TNBC_ID = f.read().splitlines()
-    simulations = PatientModelSimulations(models.breast.__package__, TNBC_ID)
+    simulations = PatientModelSimulations(models.breast.__package__, random.sample(TCGA_ID, 3))
     start = time.time()
     assert simulations.run() is None
     elapsed = time.time() - start
-    print(f"Computation time: {elapsed/60:.1f} [min]")
+    print(f"Computation time for simulating 3 patients: {elapsed/60:.1f} [min]")
     # Add new response characteristics
     _droprate: Callable[[np.ndarray], float] = (
         lambda time_course: -(time_course[-1] - np.max(time_course)) / (len(time_course) - np.argmax(time_course))
@@ -181,6 +185,29 @@ def test_patient_model_simulations():
         assert os.path.isfile(os.path.join("classification", f"{observable}.csv"))
     assert os.path.isfile("subtype_classification.pdf")
 
+
+def test_patient_model_analyses():
+    for patient in TNBC_ID:
+        assert os.path.isdir(os.path.join(PATH_TO_MODELS, patient))
+    patients = random.sample(TNBC_ID, 2)
+    analyses = PatientModelAnalyses(
+        models.breast.__package__,
+        patients,
+        biomass_kws={
+            "metric": "maximum", "style": "heatmap", "options": {"excluded_initials": ["PIP2"]}
+        },
+    )
+    assert analyses.run() is None
+    for patient in patients:
+        assert os.path.isfile(
+            os.path.join(
+                PATH_TO_MODELS,
+                patient,
+                "sensitivity_coefficients",
+                "initial_condition",
+                "maximum.npy",
+            )
+        )
 
 def test_four_breast_cancer_cell_line_models():
     cell_lines: List[str] = []

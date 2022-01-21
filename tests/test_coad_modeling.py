@@ -52,11 +52,11 @@ def test_patient_model_simulations():
         if patient != "TCGA_4T_AA8H_01A":
             shutil.copytree(path_to_patient("TCGA_4T_AA8H_01A"), path_to_patient(f"{patient}"))
     # Execute patient-specific models
-    simulations = PatientModelSimulations(models.colon.__package__, random.sample(TCGA_ID, 10))
+    simulations = PatientModelSimulations(models.colon.__package__, random.sample(TCGA_ID, 3))
     start = time.time()
     assert simulations.run() is None
     elapsed = time.time() - start
-    print(f"Computation time for simulating 10 patients: {elapsed/60:.1f} [min]")
+    print(f"Computation time for simulating 3 patients: {elapsed/60:.1f} [min]")
 
 
 def test_cleanup_models():
