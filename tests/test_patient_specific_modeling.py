@@ -189,7 +189,7 @@ def test_patient_model_simulations():
 def test_patient_model_analyses():
     for patient in TNBC_ID:
         assert os.path.isdir(os.path.join(PATH_TO_MODELS, patient))
-    patients = random.sample(TNBC_ID, 2)
+    patients = random.sample(TNBC_ID, 1)
     analyses = PatientModelAnalyses(
         models.breast.__package__,
         patients,
