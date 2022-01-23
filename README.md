@@ -1,6 +1,18 @@
-[![pasmopy-project](https://repository-images.githubusercontent.com/334852660/03d74ab9-2bd2-4f90-bd9d-b0f7a71fd3f1)](https://pasmopy.readthedocs.io)
-
 # The Pasmopy Project: Breast Cancer [![Actions Status](https://github.com/pasmopy/breast_cancer/workflows/Tests/badge.svg)](https://github.com/pasmopy/breast_cancer/actions)
+
+[![overview](https://raw.githubusercontent.com/pasmopy/pasmopy/master/docs/_static/img/overview.png)](https://pasmopy.readthedocs.io)
+
+This repository contains modeling and analysis code for the following paper:
+
+- Imoto, Hiroaki and Yamashiro, Sawa and Okada, Mariko, A Text-Based Computational Framework for Patient-Specific Modeling for Classification of Cancers. Available at SSRN: https://ssrn.com/abstract=3965951 or http://dx.doi.org/10.2139/ssrn.3965951
+
+## Installation
+
+Clone the package:
+
+```shell
+$ git clone https://github.com/pasmopy/breast_cancer.git
+```
 
 ## Requirements
 
@@ -10,13 +22,13 @@
 
 1. [Integration of TCGA and CCLE data](https://github.com/pasmopy/breast_cancer/wiki/Integration-of-TCGA-and-CCLE-data)
 
-1. [Construction of a comprehensive model of the ErbB signaling network](https://github.com/pasmopy/breast_cancer/wiki/Construction-of-a-comprehensive-model-of-the-ErbB-signaling-network)
+2. [Construction of a comprehensive model of the ErbB signaling network](https://github.com/pasmopy/breast_cancer/wiki/Construction-of-a-comprehensive-model-of-the-ErbB-signaling-network)
 
-1. [Individualization of the mechanistic model](https://github.com/pasmopy/breast_cancer/wiki/Individualization-of-the-mechanistic-model)
+3. [Individualization of the mechanistic model](https://github.com/pasmopy/breast_cancer/wiki/Individualization-of-the-mechanistic-model)
 
-1. [Subtype classification based on the ErbB signaling dynamics](https://github.com/pasmopy/breast_cancer/wiki/Subtype-classification-based-on-the-ErbB-signaling-dynamics)
+4. [Subtype classification based on the ErbB signaling dynamics](https://github.com/pasmopy/breast_cancer/wiki/Subtype-classification-based-on-the-ErbB-signaling-dynamics)
 
-1. [Investigation of patient-specific pathway activities](https://github.com/pasmopy/breast_cancer/wiki/Investigation-of-patient-specific-pathway-activities)
+5. [Investigation of patient-specific pathway activities](https://github.com/pasmopy/breast_cancer/wiki/Investigation-of-patient-specific-pathway-activities)
 
 ## Author
 
