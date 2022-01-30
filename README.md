@@ -37,4 +37,10 @@ $ git clone https://github.com/pasmopy/breast_cancer.git
 
 ## License
 
-[Apache License 2.0](LICENSE)
+1. Code license
+
+    Licensed under the [Apache License, Version 2.0](https://www.apache.org/licenses/LICENSE-2.0). For details, see the [LICENSE](LICENSE) file.
+
+2. Model parameters license
+ 
+   The model parameters are made available under the terms of the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0) license. You can find details at: https://creativecommons.org/licenses/by-nc-nd/4.0
