@@ -10,7 +10,7 @@ import numpy as np
 from pasmopy import Model, PatientModelAnalyses, PatientModelSimulations, Text2Model
 from pasmopy.preprocessing import WeightingFactors
 
-from .C_erbb_network import *
+from .C import *
 
 try:
     import models.breast
@@ -167,10 +167,10 @@ def test_patient_model_simulations():
     elapsed = time.time() - start
     print(f"Computation time for simulating 3 patients: {elapsed/60:.1f} [min]")
     # Add new response characteristics
-    _droprate: Callable[[np.ndarray], float] = (
+    get_droprate: Callable[[np.ndarray], float] = (
         lambda time_course: -(time_course[-1] - np.max(time_course)) / (len(time_course) - np.argmax(time_course))
     )
-    simulations.response_characteristics["droprate"] = _droprate
+    simulations.response_characteristics["droprate"] = get_droprate
     # Extract response characteristics and visualize patient classification
     simulations.subtyping(
         "subtype_classification.pdf",
