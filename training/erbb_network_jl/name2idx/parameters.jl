@@ -657,27 +657,16 @@ const NAMES = [
     "w_AKT1",
     "w_AKT2",
     #
-    # "w_RPS6KA1",
-    # "w_RPS6KA2",
-    # "w_RPS6KA3",
-    # "w_RPS6KA6",
-    #
     "w_PPP2CA",
     "w_PPP2CB",
     #
     "w_PTPN1",
-    #
-    # "w_CREB1",
-    #
-    # "w_ELK1",
     #
     "w_GSK3B",
     #
     "w_DUSP5",
     "w_DUSP6",
     "w_DUSP7",
-    #
-    # "w_FOS",
     #
     "w_MYC",
 ]

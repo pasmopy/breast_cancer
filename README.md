@@ -4,7 +4,7 @@
 
 This repository contains modeling and analysis code for the following paper:
 
-- Imoto, Hiroaki and Yamashiro, Sawa and Okada, Mariko, A Text-Based Computational Framework for Patient-Specific Modeling for Classification of Cancers. Available at SSRN: https://ssrn.com/abstract=3965951 or http://dx.doi.org/10.2139/ssrn.3965951
+- Imoto, H., Yamashiro, S. & Okada, M. A text-based computational framework for patient -specific modeling for classification of cancers. _iScience_ (2022). https://doi.org/10.1016/j.isci.2022.103944
 
 ## Installation
 
