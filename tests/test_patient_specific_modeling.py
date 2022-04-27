@@ -45,7 +45,7 @@ def test_model_construction():
         from models import erbb_network
     except ImportError:
         print("can't import erbb_network from models.")
-        
+
     model = Model(erbb_network.__package__).create()
     # add weighting factors
     gene_expression = {
@@ -160,7 +160,7 @@ def test_patient_model_simulations():
         if patient != "TCGA_3C_AALK_01A":
             shutil.copytree(path_to_patient("TCGA_3C_AALK_01A"), path_to_patient(f"{patient}"))
     # Execute patient-specific models
-    simulations = PatientModelSimulations(models.breast.__package__, random.sample(TCGA_ID, 3))
+    simulations = PatientModelSimulations(models.breast.__package__, random.sample(TNBC_ID, 3))
     start = time.time()
     assert simulations.run() is None
     elapsed = time.time() - start
@@ -171,21 +171,18 @@ def test_patient_model_simulations():
     )
     simulations.response_characteristics["droprate"] = get_droprate
     # Extract response characteristics and visualize patient classification
-    try:
-        simulations.subtyping(
-            "subtype_classification.pdf",
-            {
-                "Phosphorylated_Akt": {"EGF": ["AUC", "droprate"], "HRG": ["AUC", "droprate"]},
-                "Phosphorylated_ERK": {"EGF": ["AUC", "droprate"], "HRG": ["AUC", "droprate"]},
-                "Phosphorylated_c-Myc": {"EGF": ["AUC", "droprate"], "HRG": ["AUC", "droprate"]},
-            },
-        )
-        obs_names = ["Phosphorylated_Akt", "Phosphorylated_ERK", "Phosphorylated_c-Myc"]
-        for observable in obs_names:
-            assert os.path.isfile(os.path.join("classification", f"{observable}.csv"))
-        assert os.path.isfile("subtype_classification.pdf")
-    except ValueError:
-        pass
+    simulations.subtyping(
+        "subtype_classification.pdf",
+        {
+            "Phosphorylated_Akt": {"EGF": ["AUC", "droprate"], "HRG": ["AUC", "droprate"]},
+            "Phosphorylated_ERK": {"EGF": ["AUC", "droprate"], "HRG": ["AUC", "droprate"]},
+            "Phosphorylated_c-Myc": {"EGF": ["AUC", "droprate"], "HRG": ["AUC", "droprate"]},
+        },
+    )
+    obs_names = ["Phosphorylated_Akt", "Phosphorylated_ERK", "Phosphorylated_c-Myc"]
+    for observable in obs_names:
+        assert os.path.isfile(os.path.join("classification", f"{observable}.csv"))
+    assert os.path.isfile("subtype_classification.pdf")
 
 
 def test_patient_model_analyses():
