@@ -3,7 +3,7 @@ import random
 import shutil
 import sys
 import time
-from typing import Callable, List
+from typing import Callable, List, Optional
 
 import numpy as np
 from pasmopy import Model, PatientModelAnalyses, PatientModelSimulations, Text2Model
@@ -134,7 +134,12 @@ def test_model_construction():
         assert len(model.problem.idx_params) + len(model.problem.idx_initials) == 221
 
 
-def test_patient_model_simulations():
+def test_patient_model_simulations(
+    n_patients: int = 3,
+    dynamical_feature: Optional[List[str]] = None,
+):
+    if not 1<= n_patients <= 6:
+        raise ValueError("`n_patients` must be lie within [1, 6].")
     # Initialization
     for patient in TCGA_ID:
         if patient in os.listdir(PATH_TO_MODELS) and patient != "TCGA_3C_AALK_01A":
@@ -160,23 +165,28 @@ def test_patient_model_simulations():
         if patient != "TCGA_3C_AALK_01A":
             shutil.copytree(path_to_patient("TCGA_3C_AALK_01A"), path_to_patient(f"{patient}"))
     # Execute patient-specific models
-    simulations = PatientModelSimulations(models.breast.__package__, random.sample(TNBC_ID, 3))
+    simulations = PatientModelSimulations(
+        models.breast.__package__,
+        random.sample(TNBC_ID, n_patients),
+    )
     start = time.time()
     assert simulations.run() is None
     elapsed = time.time() - start
-    print(f"Computation time for simulating 3 patients: {elapsed/60:.1f} [min]")
+    print(f"Computation time for simulating {n_patients} patients: {elapsed/60:.1f} [min]")
     # Add new response characteristics
     get_droprate: Callable[[np.ndarray], float] = (
         lambda time_course: -(time_course[-1] - np.max(time_course)) / (len(time_course) - np.argmax(time_course))
     )
     simulations.response_characteristics["droprate"] = get_droprate
     # Extract response characteristics and visualize patient classification
+    if dynamical_feature is None:
+        dynamical_feature = ["AUC", "droprate"]
     simulations.subtyping(
         "subtype_classification.pdf",
         {
-            "Phosphorylated_Akt": {"EGF": ["AUC", "droprate"], "HRG": ["AUC", "droprate"]},
-            "Phosphorylated_ERK": {"EGF": ["AUC", "droprate"], "HRG": ["AUC", "droprate"]},
-            "Phosphorylated_c-Myc": {"EGF": ["AUC", "droprate"], "HRG": ["AUC", "droprate"]},
+            "Phosphorylated_Akt": {"EGF": dynamical_feature, "HRG": dynamical_feature},
+            "Phosphorylated_ERK": {"EGF": dynamical_feature, "HRG": dynamical_feature},
+            "Phosphorylated_c-Myc": {"EGF": dynamical_feature, "HRG": dynamical_feature},
         },
     )
     obs_names = ["Phosphorylated_Akt", "Phosphorylated_ERK", "Phosphorylated_c-Myc"]
