@@ -3,13 +3,7 @@
 
 name: Tests
 
-on:
-  schedule:
-    - cron: 00 00 * * 1 # every Monday at 00:00
-  push:
-    branches: [master]
-  pull_request:
-    branches: [master]
+on: [push, pull_request]
 
 jobs:
   build:
