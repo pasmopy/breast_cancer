@@ -49,22 +49,25 @@ downloadTCGA <- function(cancertype, sampletype,
   query <- GDCquery(project = paste("TCGA", cancertype, sep = "-"),
                     data.category = "Transcriptome Profiling",
                     data.type = "Gene Expression Quantification",
-                    workflow.type = "HTSeq - Counts")
+                    workflow.type = "STAR - Counts")
   cancertype_TCGA <<- cancertype
   GDCdownload(query)
   df<- GDCprepare(query, save = F, summarizedExperiment = F)
-  df_TCGA <- df[grep("ENSG", df$X1),]
-  df_TCGA <- df_TCGA[-c((nrow(df_TCGA)-4):nrow(df_TCGA)),]
+  
+  df_TCGA <- df[grep("ENSG", df$gene_id),]
+  df_TCGA<-as.data.frame(df_TCGA,check.names=F)
   pattern <- paste0("-",
                     paste0(sampletype, "A"),
                     "-")
   TCGA_counts <- df_TCGA[,grepl(paste(pattern, collapse = "|"), colnames(df_TCGA))]
-  colnames(TCGA_counts) <- str_sub(colnames(TCGA_counts), start = 1, end = 16)
+  TCGA_counts <- TCGA_counts[,grepl("unstranded",colnames(TCGA_counts))]
+  colnames(TCGA_counts) <- str_sub(colnames(TCGA_counts), start = 1, end = 27)
   TCGA_counts <- TCGA_counts[,!duplicated(colnames(TCGA_counts))]
-  TCGA_counts$X1 <- str_sub(df_TCGA$X1, start = 1, end = 15)
-  TCGA_counts_filtered <<- data.frame(Name = TCGA_counts$X1,
+  TCGA_counts$gene_id <- str_sub(df_TCGA$gene_id, start = 1, end = 15)
+  TCGA_counts_filtered <<- data.frame(Name = TCGA_counts$gene_id,
                                       TCGA_counts[,grep(paste(selected_samples, collapse = "|"),
-                                                        colnames(TCGA_counts))])
+                                                        colnames(TCGA_counts))],check.names=F)
+  colnames(TCGA_counts_filtered)<-gsub("-","_",colnames(TCGA_counts_filtered))
   if (outputresult == TRUE){
     fwrite(TCGA_counts_filtered, "TCGA_counts.csv")
   }
@@ -91,7 +94,7 @@ downloadCCLE <- function(cancertype,
           paste("  downloadCCLE(): Number of selected samples is ", ncol(CCLE_cancer)-2,"\n"),
           "********************************************************")
   if (outputresult == TRUE){
-    fwrite.csv(CCLE_cancer, "CCLE_counts.csv")
+    write.csv(CCLE_cancer, "CCLE_counts.csv")
   }
 }
 
@@ -106,17 +109,18 @@ mergeTCGAandCCLE <- function(outputresult = FALSE){
   rownames(TCGA_CCLE_counts_numeric) <- rownames(TCGA_CCLE_counts)
   batch <- data.frame(sample = colnames(TCGA_CCLE_counts_numeric),
                       batch = c(rep(1,length(grep("BREAST", colnames(TCGA_CCLE_counts_numeric)))), 
-                                rep(2,length(grep("TCGA", colnames(TCGA_CCLE_counts_numeric))))))
+                                rep(2,length(grep("TCGA", colnames(TCGA_CCLE_counts_numeric))))),check.names=F)
   TCGA_CCLE_counts_matrix <- data.matrix(TCGA_CCLE_counts_numeric)
   postComBat <- ComBat_seq(TCGA_CCLE_counts_matrix, batch = batch$batch, group = NULL)
   postComBat_ensembl <<- data.frame(Name = rownames(postComBat),
                                     Description = TCGA_CCLE_counts$Description,
-                                    postComBat)
+                                    postComBat,check.names=F)
   allread <- apply(postComBat_ensembl[,-c(1:2)],2,sum)
   write.csv(data.frame(Sample = names(allread),
                        total_read_counts = allread) %>% remove_rownames(),
             "totalreadcounts.csv",
             row.names = F)
+  colnames(postComBat_ensembl)<-gsub("-","_",colnames(postComBat_ensembl))
   if (outputresult == TRUE){
     write.csv(postComBat_ensembl, "merged_TCGA_CCLE.csv")
   }
@@ -133,7 +137,7 @@ normalization <- function(min, max){
   allread_sub <- allread[allread >= min & allread <= max]
   postComBat_sub_ensembl <- data.frame(ensembl_gene_id = postComBat_ensembl$Name,
                                        Description = postComBat_ensembl$Description,
-                                       postComBat_ensembl[,colnames(postComBat_ensembl) %in% names(allread_sub)])
+                                       postComBat_ensembl[,colnames(postComBat_ensembl) %in% names(allread_sub)],check.names=F)
   countfile_length <<- inner_join(gene.annotations,
                                   postComBat_sub_ensembl,
                                   by = "ensembl_gene_id")
@@ -151,7 +155,8 @@ normalization <- function(min, max){
   counts_tpm_symbol <<- inner_join(ensembl_symbol,
                                   counts_tpm,
                                   by = "ensembl_gene_id")
-  fwrite(counts_tpm_symbol, paste("TPM_RLE_postComBat_", cancertype_TCGA, "_", cancertype_CCLE,".csv"))
+  colnames(counts_tpm_symbol)<-gsub("-","_",colnames(counts_tpm_symbol))
+  fwrite(counts_tpm_symbol, paste0("TPM_RLE_postComBat_", cancertype_TCGA, "_", cancertype_CCLE,".csv"))
   message("********************************************************\n",
           paste("  normalization(): Number of TCGA samples is ", length(grep("TCGA", colnames(counts_tpm_symbol))),"\n"),
           paste("  normalization(): Number of CCLE samples is ", ncol(counts_tpm_symbol)-length(grep("TCGA", colnames(counts_tpm_symbol))),"\n"),
