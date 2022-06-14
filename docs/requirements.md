@@ -18,29 +18,41 @@ The following packages are required for transcriptomic data integration, paramet
 
 ### Python:
 
-- [pasmopy==0.1.0](https://github.com/pasmopy/pasmopy)
-- [biomass>=0.5.2,<0.6](https://github.com/biomass-dev/biomass)
-- matplotlib==3.3.4
-- numpy==1.19.2
-- pandas==1.2.4
-- seaborn==0.11.2
-- scipy==1.6.0
+```
+$ pip install -r requirements.txt
+```
+
+> - [pasmopy==0.1.0](https://github.com/pasmopy/pasmopy)
+> - [biomass>=0.5.2,<0.6](https://github.com/biomass-dev/biomass)
+> - [matplotlib==3.3.4](https://matplotlib.org)
+> - [numpy==1.19.2](https://numpy.org)
+> - [pandas==1.2.4](https://pandas.pydata.org)
+> - [seaborn==0.11.2](https://seaborn.pydata.org)
+> - [scipy==1.6.0](https://scipy.org)
 
 ### Julia:
 
-- [BioMASS.jl==0.5.0](https://github.com/biomass-dev/BioMASS.jl)
+```shell
+$ julia
+julia> ] add BioMASS
+```
+
+> - [BioMASS.jl==0.5.0](https://github.com/biomass-dev/BioMASS.jl)
 
 ### R:
 
-- TCGAbiolinks
-- sva
-- biomaRt
-- ComplexHeatmap
-- viridisLite
-- dplyr
-- edgeR
-- sva
-- tibble
-- data.table
-- stringr
-- biomaRt
+```shell
+$ R
+> source("install_requirements.R")
+```
+
+> - [TCGAbiolinks](https://bioconductor.org/packages/release/bioc/html/TCGAbiolinks.html)
+> - [sva](https://bioconductor.org/packages/release/bioc/html/sva.html)
+> - [biomaRt](https://bioconductor.org/packages/release/bioc/html/biomaRt.html)
+> - [ComplexHeatmap](https://www.bioconductor.org/packages/release/bioc/html/ComplexHeatmap.html)
+> - [viridisLite](https://github.com/sjmgarnier/viridisLite)
+> - [dplyr](https://dplyr.tidyverse.org)
+> - [edgeR](https://bioconductor.org/packages/release/bioc/html/edgeR.html)
+> - [tibble](https://tibble.tidyverse.org)
+> - [data.table](https://github.com/Rdatatable/data.table)
+> - [stringr](https://stringr.tidyverse.org)
