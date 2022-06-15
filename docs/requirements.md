@@ -34,7 +34,7 @@ $ pip install -r requirements.txt
 
 ```shell
 $ julia
-julia> ] add BioMASS
+julia> ] add BioMASS @0.5.0
 ```
 
 > - [BioMASS.jl==0.5.0](https://github.com/biomass-dev/BioMASS.jl)
