@@ -20,7 +20,9 @@ $ git clone https://github.com/pasmopy/breast_cancer.git
 
 ## Getting Started
 
-Online documentation is hosted on GitHub Pages: https://pasmopy.github.io/breast_cancer.
+- Online documentation is hosted on GitHub Pages: https://pasmopy.github.io/breast_cancer.
+
+- Please also refer to the method paper: https://doi.org/10.1016/j.xpro.2022.101619.
 
 ## Author
 
