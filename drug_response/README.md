@@ -4,7 +4,7 @@
 
 #### Description:
 
-> Pharmacologic profiles for 24 anticancer drugs across 504 CCLE lines.
+> Pharmacologic profiles for 24 anticancer drugs across 504 human cancer lines.
 
 #### Source:
 
