@@ -121,10 +121,7 @@ def test_model_construction():
         shutil.rmtree(os.path.join(PATH_TO_MODELS, "TCGA_3C_AALK_01A"))
     except FileNotFoundError:
         pass
-    shutil.move(
-        os.path.join("models", "erbb_network"),
-        os.path.join(PATH_TO_MODELS, "TCGA_3C_AALK_01A")
-    )
+    shutil.move(os.path.join("models", "erbb_network"), os.path.join(PATH_TO_MODELS, "TCGA_3C_AALK_01A"))
     assert os.path.isdir(path_to_patient("TCGA_3C_AALK_01A"))
     try:
         from models.breast import TCGA_3C_AALK_01A
@@ -138,7 +135,7 @@ def test_patient_model_simulations(
     n_patients: int = 3,
     dynamical_feature: Optional[List[str]] = None,
 ):
-    if not 1<= n_patients <= 6:
+    if not 1 <= n_patients <= 6:
         raise ValueError("`n_patients` must be lie within [1, 6].")
     # Initialization
     for patient in TCGA_ID:
@@ -170,12 +167,12 @@ def test_patient_model_simulations(
         random.sample(TNBC_ID, n_patients),
     )
     start = time.time()
-    assert simulations.run() is None
+    assert simulations.run(n_proc=2) is None
     elapsed = time.time() - start
     print(f"Computation time for simulating {n_patients} patients: {elapsed/60:.1f} [min]")
     # Add new response characteristics
-    get_droprate: Callable[[np.ndarray], float] = (
-        lambda time_course: -(time_course[-1] - np.max(time_course)) / (len(time_course) - np.argmax(time_course))
+    get_droprate: Callable[[np.ndarray], float] = lambda time_course: -(time_course[-1] - np.max(time_course)) / (
+        len(time_course) - np.argmax(time_course)
     )
     simulations.response_characteristics["droprate"] = get_droprate
     # Extract response characteristics and visualize patient classification
@@ -202,11 +199,9 @@ def test_patient_model_analyses():
     analyses = PatientModelAnalyses(
         models.breast.__package__,
         patients,
-        biomass_kws={
-            "metric": "maximum", "style": "heatmap", "options": {"excluded_initials": ["PIP2"]}
-        },
+        biomass_kws={"metric": "maximum", "style": "heatmap", "options": {"excluded_initials": ["PIP2"]}},
     )
-    assert analyses.run() is None
+    assert analyses.run(n_proc=2) is None
     for patient in patients:
         assert os.path.isfile(
             os.path.join(
@@ -218,13 +213,14 @@ def test_patient_model_analyses():
             )
         )
 
+
 def test_four_breast_cancer_cell_line_models():
     cell_lines: List[str] = []
     for model in os.listdir(os.path.join("models", "breast")):
         if model.endswith("_BREAST"):
             cell_lines.append(model)
     simulations = PatientModelSimulations(models.breast.__package__, cell_lines)
-    assert simulations.run() is None
+    assert simulations.run(n_proc=2) is None
     for model in cell_lines:
         simulated_values = np.load(
             os.path.join(
