@@ -54,7 +54,7 @@ def test_patient_model_simulations():
     # Execute patient-specific models
     simulations = PatientModelSimulations(models.colon.__package__, random.sample(TCGA_ID, 3))
     start = time.time()
-    assert simulations.run() is None
+    assert simulations.run(n_proc=2) is None
     elapsed = time.time() - start
     print(f"Computation time for simulating 3 patients: {elapsed/60:.1f} [min]")
 
