@@ -44,7 +44,7 @@ function solveode(
             prob,CVODE_BDF(),
             abstol=ABSTOL,reltol=RELTOL,saveat=dt,dtmin=eps(),verbose=false
         )
-        is_successful = ifelse(sol.retcode === :Success, true, false)
+        is_successful = ifelse(sol.retcode == :Success, true, false)
     catch
         is_successful = false
     finally
@@ -71,7 +71,7 @@ function get_steady_state(
             ),
             dt=dt,verbose=false
         )
-        is_successful = ifelse(sol.retcode === :Success, true, false)
+        is_successful = ifelse(sol.retcode == :Success, true, false)
     catch
         is_successful = false
     finally
