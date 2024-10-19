@@ -2,7 +2,7 @@
 
 [![Actions Status](https://github.com/pasmopy/breast_cancer/workflows/Tests/badge.svg)](https://github.com/pasmopy/breast_cancer/actions)
 [![License](https://img.shields.io/badge/License-Apache%202.0-green.svg?logo=apache)](https://opensource.org/licenses/Apache-2.0)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.6781265.svg)](https://doi.org/10.5281/zenodo.6781265)
+[![iScience Paper](https://img.shields.io/badge/DOI-10.1016%2Fj.isci.2022.103944-blue)](https://doi.org/10.1016/j.isci.2022.103944)
 
 [![overview](https://raw.githubusercontent.com/pasmopy/pasmopy/master/docs/_static/img/overview.png)](https://pasmopy.readthedocs.io)
 
